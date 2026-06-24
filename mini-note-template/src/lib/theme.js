@@ -1,0 +1,42 @@
+// src/lib/theme.js — MUI theme factory + useThemeMode hook.
+// Mode persists in Prefs ('mode' key).
+(function () {
+  const { createTheme } = window.MUI;
+
+  window.buildTheme = function (mode) {
+    return createTheme({
+      palette: {
+        mode: mode,
+        primary: { main: '#1976d2' },
+        background: mode === 'dark'
+          ? { default: '#0b1220', paper: '#111a2b' }
+          : { default: '#f6f8fb', paper: '#ffffff' },
+        text: mode === 'dark'
+          ? { primary: '#e8edf5', secondary: 'rgba(232,237,245,.66)' }
+          : { primary: '#0b1220', secondary: 'rgba(15,23,42,.62)' },
+        divider: mode === 'dark' ? 'rgba(255,255,255,.08)' : 'rgba(15,23,42,.08)',
+      },
+      shape: { borderRadius: 10 },
+      typography: {
+        fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, sans-serif',
+        h4: { fontWeight: 700, letterSpacing: '-0.02em' },
+        h5: { fontWeight: 700, letterSpacing: '-0.015em' },
+        h6: { fontWeight: 600, letterSpacing: '-0.01em' },
+        button: { fontWeight: 600 },
+      },
+    });
+  };
+
+  window.useThemeMode = function () {
+    const [mode, setModeState] = React.useState(() => window.Prefs.get('mode', 'light'));
+    const setMode = React.useCallback((v) => { setModeState(v); window.Prefs.set('mode', v); }, []);
+    const toggleMode = React.useCallback(() => {
+      setModeState((cur) => {
+        const next = cur === 'dark' ? 'light' : 'dark';
+        window.Prefs.set('mode', next);
+        return next;
+      });
+    }, []);
+    return { mode, setMode, toggleMode };
+  };
+})();

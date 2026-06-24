@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  react-mini-note-app-dev:
+    container_name: 'react-mini-note-app-dev'
+    image: react-mini-note-app-dev
+    user: "${UID}:${GID}"
+    build:
+      context: .
+      dockerfile: development.dockerfile
+      target: development
+      args:
+        - USER=${UID}
+        - GROUP=${GID}
+    command: /bin/sh -c "yarn install --network-timeout 1000000000 && yarn dev"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+      - NEXT_PUBLIC_SIGNUP_CONFIRMATION_MODE=${NEXT_PUBLIC_SIGNUP_CONFIRMATION_MODE}
+    volumes:
+      - ./src:/app
+    ports:
+      - "3040:3000"
+      - "9249:9229"
+
+networks:
+  default:
+    external:
+      name: mini_note_network

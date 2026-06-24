@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nimbus — Check your inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script crossorigin src="https://unpkg.com/@emotion/react@11.11.1/dist/emotion-react.umd.min.js"></script>
+<script crossorigin src="https://unpkg.com/@emotion/styled@11.11.0/dist/emotion-styled.umd.min.js"></script>
+<script crossorigin src="https://unpkg.com/@mui/material@5.15.14/umd/material-ui.development.js"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body { margin: 0; font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  *:focus-visible { outline: 2px solid #1976d2; outline-offset: 2px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="src/lib/mui.js"></script>
+<script src="src/lib/store.js"></script>
+<script src="src/lib/prefs.js"></script>
+<script src="src/lib/router.js"></script>
+<script type="text/babel" data-presets="env,react" src="src/lib/i18n.js"></script>
+<script type="text/babel" data-presets="env,react" src="src/lib/theme.js"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/Icon.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/BrandMark.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/AppHeader.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/FloatingLayout.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/ScreenHead.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/StrengthMeter.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/CodeInput.jsx"></script>
+<script type="text/babel" data-presets="env,react" src="src/components/AppShell.jsx"></script>
+
+<script type="text/babel" data-presets="env,react" src="src/screens/SignupSentScreen.jsx"></script>
+<script type="text/babel" data-presets="env,react">
+function Page() {
+  return (
+    <window.AppShell active="register">
+      {({ t }) => <window.SignupSentScreen t={t} />}
+    </window.AppShell>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Page />);
+</script>
+</body>
+</html>

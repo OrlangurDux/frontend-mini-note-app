@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: react-mini-note-app
+    image: react-mini-note-app
+    user: "${UID}:${GID}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+      args:
+        - USER=${UID}
+        - GROUP=${GID}
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+        - NEXT_PUBLIC_SIGNUP_CONFIRMATION_MODE=${NEXT_PUBLIC_SIGNUP_CONFIRMATION_MODE}
+    volumes:
+      - /etc/passwd:/etc/passwd:ro
+    ports:
+      - 3090:3000
+      - 9299:9229

@@ -1,0 +1,12 @@
+# IDEA
+.idea
+#VSCode
+.vscode
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store
+
+# .env
+.env
