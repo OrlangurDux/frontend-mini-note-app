@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { createTheme } from '@mui/material/styles';
 import { Prefs } from './prefs';
 
@@ -27,7 +27,12 @@ export function buildTheme(mode) {
 }
 
 export function useThemeMode() {
-  const [mode, setModeState] = useState(() => Prefs.get('mode', 'light'));
+  // Always start from the same default the server rendered ('light'); the
+  // real stored preference is only applied after mount (client-only), so
+  // SSR and the first client render stay in sync and React doesn't flag a
+  // hydration mismatch.
+  const [mode, setModeState] = useState('light');
+  useEffect(() => { setModeState(Prefs.get('mode', 'light')); }, []);
   const setMode = useCallback((v) => { setModeState(v); Prefs.set('mode', v); }, []);
   const toggleMode = useCallback(() => {
     setModeState((cur) => {

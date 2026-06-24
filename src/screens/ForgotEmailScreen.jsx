@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
@@ -15,9 +15,11 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ForgotEmailScreen({ t }) {
   const router = useRouter();
-  const [email, setEmail] = useState(() => FlowStore.get('fpEmail', ''));
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => { setEmail(FlowStore.get('fpEmail', '')); }, []);
 
   const onSubmit = async (ev) => {
     ev.preventDefault();

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Prefs } from './prefs';
 
 const STR = {
@@ -489,7 +489,10 @@ const STR = {
 };
 
 export function useTranslations() {
-  const [lang, setLangState] = useState(() => Prefs.get('lang', 'en'));
+  // Same rationale as useThemeMode: start from the SSR default ('en') and
+  // only switch to the stored language after mount, client-side.
+  const [lang, setLangState] = useState('en');
+  useEffect(() => { setLangState(Prefs.get('lang', 'en')); }, []);
   const setLang = useCallback((v) => { setLangState(v); Prefs.set('lang', v); }, []);
   const toggleLang = useCallback(() => {
     setLangState((cur) => {
