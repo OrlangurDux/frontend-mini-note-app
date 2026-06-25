@@ -1,4 +1,4 @@
-FROM node:20-alpine AS production
+FROM node:20-bookworm-slim AS production
 ENV NODE_ENV production
 ARG USER
 ARG GROUP

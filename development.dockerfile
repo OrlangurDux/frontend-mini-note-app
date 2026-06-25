@@ -1,4 +1,4 @@
-FROM node:20-alpine AS development
+FROM node:20-bookworm-slim AS development
 ENV NODE_ENV development
 ARG USER
 ARG GROUP

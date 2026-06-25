@@ -18,6 +18,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Divider from '@mui/material/Divider';
 import { Icon } from '../components/Icon';
+import { MarkdownEditor } from '../components/notes/MarkdownEditor';
 import { useCategories } from '../contexts/CategoriesContext';
 import { NoteTags } from '../lib/notesTags';
 import * as notesApi from '../lib/api/notes';
@@ -185,9 +186,9 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
                     } }}
                     InputProps={{ disableUnderline: true, sx: { fontFamily: 'JetBrains Mono, monospace', fontSize: 13, ml: 0.5 } }} />
                 </Stack>
-                <TextField value={draft.note} onChange={(e) => setDraft({ ...draft, note: e.target.value })}
-                  placeholder="# Title&#10;&#10;Write in markdown…" multiline minRows={14} fullWidth variant="outlined"
-                  InputProps={{ sx: { borderRadius: 2, fontFamily: 'JetBrains Mono, monospace', fontSize: 14, lineHeight: 1.7 } }} />
+                <MarkdownEditor t={t} value={draft.note}
+                  onChange={(v) => setDraft({ ...draft, note: v })}
+                  placeholder="# Title&#10;&#10;Write in markdown…" />
               </Stack>
             ) : (
               <Stack spacing={2}>
