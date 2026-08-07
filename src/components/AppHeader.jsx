@@ -14,16 +14,19 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { BrandMark } from './BrandMark';
 import { Icon } from './Icon';
+import { Avatar } from './profile/Avatar';
 import { useAuth } from '../contexts/AuthContext';
+import { resolveAssetUrl } from '../lib/domains';
 
 // `variant`: 'public' (landing/login/signup/forgot — shows sign in/up CTA)
 // or 'app' (notes/profile — shows nav + account menu).
 export function AppHeader({ mode, lang, t, variant = 'public', onToggleTheme, onToggleLang }) {
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const [anchor, setAnchor] = useState(null);
 
   const showApp = variant === 'app' && isAuthenticated;
+  const initials = (user?.name || user?.email || '?').trim().charAt(0).toUpperCase();
 
   const onSignOut = () => {
     setAnchor(null);
@@ -76,14 +79,9 @@ export function AppHeader({ mode, lang, t, variant = 'public', onToggleTheme, on
                     {t.nTitle}
                   </Button>
                 </Link>
-                <Box sx={{
-                  width: 32, height: 32, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 60%, #90caf9 100%)',
-                  display: 'grid', placeItems: 'center',
-                  color: '#fff', fontWeight: 700, fontSize: 13, letterSpacing: '.02em',
-                  cursor: 'pointer',
-                  boxShadow: '0 1px 0 rgba(255,255,255,.35) inset, 0 4px 10px rgba(25,118,210,.35)',
-                }} onClick={(e) => setAnchor(e.currentTarget)}>M</Box>
+                <Box sx={{ cursor: 'pointer' }} onClick={(e) => setAnchor(e.currentTarget)}>
+                  <Avatar src={resolveAssetUrl(user?.avatar)} initials={initials} size={32} />
+                </Box>
                 <Menu anchorEl={anchor} open={!!anchor} onClose={() => setAnchor(null)}
                       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
                   <MenuItem onClick={() => setAnchor(null)} component={Link} href="/profile">{t.pNavAbout}</MenuItem>

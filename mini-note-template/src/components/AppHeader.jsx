@@ -7,7 +7,7 @@ function AppHeader({ mode, lang, active, t, inner, onToggleTheme, onToggleLang }
   const goRegister = () => window.Router.go(active === 'register' ? 'login' : 'signup');
   const goHome = () => { if (inner) { window.location.href = 'index.html'; } else { window.Router.go('login'); } };
   const goApp = () => { window.location.href = 'success.html'; };
-  const goSignOut = () => { try { sessionStorage.removeItem('nimbus:email'); } catch (e) {} window.location.href = 'login.html'; };
+  const goSignOut = () => { try { sessionStorage.removeItem('mininote:email'); } catch (e) {} window.location.href = 'login.html'; };
 
   return (
     <AppBar

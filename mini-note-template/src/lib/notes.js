@@ -1,8 +1,8 @@
 // src/lib/notes.js — sample notes data + filter/sort/persist helpers.
-// Notes live in localStorage under 'nimbus:notes' so edits survive across
+// Notes live in localStorage under 'mininote:notes' so edits survive across
 // the list and detail pages without a backend.
 (function () {
-  const KEY = 'nimbus:notes';
+  const KEY = 'mininote:notes';
 
   const TAGS = ['research', 'product', 'engineering', 'design', 'meeting', 'personal', 'reading', 'idea'];
 

@@ -5,7 +5,7 @@
 const { Box, Stack, Typography, Button } = window.MUI;
 
 function SuccessScreen({ t }) {
-  const email = window.AuthStore.get('email', 'demo@nimbus.app');
+  const email = window.AuthStore.get('email', 'demo@mininote.app');
   const signOut = () => {
     window.AuthStore.clear('email');
     window.Router.go('login');

@@ -16,6 +16,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import { Avatar } from '../components/profile/Avatar';
 import { useAuth } from '../contexts/AuthContext';
+import { resolveAssetUrl } from '../lib/domains';
 import * as profileApi from '../lib/api/profile';
 import * as authApi from '../lib/api/auth';
 
@@ -116,7 +117,7 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
             <Box component="form" onSubmit={saveAbout}>
               <Stack spacing={2.5}>
                 <Stack direction="row" spacing={2} alignItems="center">
-                  <Avatar src={avatarFile ? URL.createObjectURL(avatarFile) : user?.avatar} initials={initials} size={72} ring editable onEdit={() => fileRef.current?.click()} />
+                  <Avatar src={avatarFile ? URL.createObjectURL(avatarFile) : resolveAssetUrl(user?.avatar)} initials={initials} size={72} ring editable onEdit={() => fileRef.current?.click()} />
                   <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickAvatar} />
                   <Stack spacing={0}>
                     <Typography sx={{ fontWeight: 600 }}>{user?.email}</Typography>

@@ -49,3 +49,17 @@ export const Domains = {
     if (Domains.getActiveId() === id) Domains.setActiveId(safe[0].id);
   },
 };
+
+// The API returns some fields (e.g. the user's avatar) as paths relative to
+// the backend's origin, not `/api/v1` — e.g. `/uploaded/avatars/<id>.png`.
+// Resolve those against the *active* domain so they load from the right
+// backend even when the app talks to a non-default domain.
+export function resolveAssetUrl(path) {
+  if (!path) return path;
+  if (/^([a-z][a-z0-9+.-]*:)?\/\//i.test(path)) return path; // already absolute
+  try {
+    return new URL(Domains.getActive().baseUrl).origin + path;
+  } catch (e) {
+    return path;
+  }
+}

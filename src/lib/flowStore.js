@@ -5,7 +5,7 @@ export const FlowStore = {
   get(key, fallback = '') {
     if (typeof window === 'undefined') return fallback;
     try {
-      const v = window.sessionStorage.getItem('nimbus:flow:' + key);
+      const v = window.sessionStorage.getItem('mininote:flow:' + key);
       return v === null ? fallback : v;
     } catch (e) {
       return fallback;
@@ -13,10 +13,10 @@ export const FlowStore = {
   },
   set(key, value) {
     if (typeof window === 'undefined') return;
-    try { window.sessionStorage.setItem('nimbus:flow:' + key, value); } catch (e) { /* ignore */ }
+    try { window.sessionStorage.setItem('mininote:flow:' + key, value); } catch (e) { /* ignore */ }
   },
   clear(key) {
     if (typeof window === 'undefined') return;
-    try { window.sessionStorage.removeItem('nimbus:flow:' + key); } catch (e) { /* ignore */ }
+    try { window.sessionStorage.removeItem('mininote:flow:' + key); } catch (e) { /* ignore */ }
   },
 };

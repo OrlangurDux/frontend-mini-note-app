@@ -7,6 +7,7 @@ import Chip from '@mui/material/Chip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Icon } from '../Icon';
+import { stripMarkdown } from '../../lib/markdown';
 
 const STATUS_COLOR = { draft: 'default', public: 'success', archive: 'warning' };
 
@@ -49,7 +50,7 @@ export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, on
             {categoryName && <Chip size="small" label={categoryName} variant="outlined" sx={{ height: 18, fontSize: 10 }} />}
           </Stack>
           <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {(note.note || '').slice(0, 140)}
+            {stripMarkdown(note.note).slice(0, 140)}
           </Typography>
         </Stack>
         <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
@@ -82,7 +83,7 @@ export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, on
       </Stack>
       {categoryName && <Chip size="small" label={categoryName} variant="outlined" sx={{ alignSelf: 'flex-start', height: 20, fontSize: 11 }} />}
       <Typography variant="body2" color="text.secondary" sx={{ flex: 1, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-        {note.note}
+        {stripMarkdown(note.note)}
       </Typography>
       <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', rowGap: 0.5 }}>
         {(tags || []).map((tg) => (

@@ -25,4 +25,4 @@ function Avatar({ initials = 'M', size = 96, ring, editable, onEdit }) {
   );
 }
 
-window.NimbusAvatar = Avatar;
+window.MiniNoteAvatar = Avatar;

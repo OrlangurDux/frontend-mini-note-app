@@ -9,10 +9,10 @@
   ];
 
   // Detect whether we're running inside the merged single-file build
-  // (identified by a <meta name="nimbus-build" content="bundle">) or as
+  // (identified by a <meta name="mininote-build" content="bundle">) or as
   // separate per-screen HTML files.
   function isBundle() {
-    const m = document.querySelector('meta[name="nimbus-build"]');
+    const m = document.querySelector('meta[name="mininote-build"]');
     return !!(m && m.getAttribute('content') === 'bundle');
   }
 

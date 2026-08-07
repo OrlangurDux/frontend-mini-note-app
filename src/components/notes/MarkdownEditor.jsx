@@ -26,7 +26,31 @@ function ToolbarButton({ title, active, onClick, d, sw }) {
   );
 }
 
-export function MarkdownEditor({ t, value, onChange, placeholder }) {
+// Shared prose styling for rendered markdown, keyed off the class TipTap
+// puts on its content element — used both by the visual editor and by the
+// read-only view so notes look identical in both places.
+const PROSE_SX = {
+  '& .mininote-md-editor': { outline: 'none' },
+  '& .mininote-md-editor p': { margin: '0 0 0.75em' },
+  '& .mininote-md-editor h1': { fontWeight: 700, fontSize: '1.7em', margin: '0.6em 0 0.4em' },
+  '& .mininote-md-editor h2': { fontWeight: 700, fontSize: '1.35em', margin: '0.6em 0 0.4em' },
+  '& .mininote-md-editor h3': { fontWeight: 600, fontSize: '1.15em', margin: '0.6em 0 0.4em' },
+  '& .mininote-md-editor blockquote': {
+    borderLeft: '3px solid', borderColor: 'primary.main', paddingLeft: 12,
+    color: 'text.secondary', fontStyle: 'italic', margin: '0.5em 0',
+  },
+  '& .mininote-md-editor pre': {
+    bgcolor: 'action.hover', borderRadius: 1, p: 1.25,
+    fontFamily: 'JetBrains Mono, monospace', fontSize: 13, overflowX: 'auto',
+  },
+  '& .mininote-md-editor code': { fontFamily: 'JetBrains Mono, monospace', fontSize: '0.92em' },
+  '& .mininote-md-editor ul, & .mininote-md-editor ol': { paddingLeft: 24, margin: '0 0 0.75em' },
+};
+
+// `editable: false` renders the same TipTap-parsed markdown read-only, with
+// no toolbar/mode toggle — used for the note detail view so it matches the
+// visual editor instead of a separate hand-rolled markdown renderer.
+export function MarkdownEditor({ t, value, onChange, placeholder, editable = true }) {
   const [viewMode, setViewMode] = useState('visual');
   const prevMode = useRef(viewMode);
 
@@ -36,22 +60,38 @@ export function MarkdownEditor({ t, value, onChange, placeholder }) {
       Markdown.configure({ html: false, bulletListMarker: '-' }),
     ],
     content: value || '',
-    onUpdate: ({ editor: ed }) => onChange(ed.storage.markdown.getMarkdown()),
-    editorProps: { attributes: { class: 'nimbus-md-editor' } },
+    editable,
+    onUpdate: ({ editor: ed }) => { if (editable) onChange(ed.storage.markdown.getMarkdown()); },
+    editorProps: { attributes: { class: 'mininote-md-editor' } },
     immediatelyRender: false,
   }, []);
 
-  // Only push the external value back into the editor when switching from
-  // code mode into visual mode — not on every keystroke, otherwise
-  // round-trip markdown formatting differences would fight the cursor.
+  // Editable: only push the external value back into the editor when
+  // switching from code mode into visual mode — not on every keystroke,
+  // otherwise round-trip markdown formatting differences would fight the
+  // cursor. Read-only: there's no cursor to fight, so always stay in sync
+  // (e.g. after the note is reloaded post-save).
   useEffect(() => {
-    if (editor && prevMode.current === 'code' && viewMode === 'visual') {
+    if (!editor) return;
+    if (!editable) {
+      editor.commands.setContent(value || '', false);
+      return;
+    }
+    if (prevMode.current === 'code' && viewMode === 'visual') {
       editor.commands.setContent(value || '', false);
     }
     prevMode.current = viewMode;
-  }, [editor, viewMode, value]);
+  }, [editor, editable, viewMode, value]);
 
   if (!editor) return null;
+
+  if (!editable) {
+    return (
+      <Box sx={{ fontSize: 14, lineHeight: 1.7, ...PROSE_SX }}>
+        <EditorContent editor={editor} />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
@@ -88,21 +128,8 @@ export function MarkdownEditor({ t, value, onChange, placeholder }) {
       {viewMode === 'visual' ? (
         <Box sx={{
           p: 2, fontSize: 14, lineHeight: 1.7, cursor: 'text',
-          '& .nimbus-md-editor': { outline: 'none', minHeight: 280 },
-          '& .nimbus-md-editor p': { margin: '0 0 0.75em' },
-          '& .nimbus-md-editor h1': { fontWeight: 700, fontSize: '1.7em', margin: '0.6em 0 0.4em' },
-          '& .nimbus-md-editor h2': { fontWeight: 700, fontSize: '1.35em', margin: '0.6em 0 0.4em' },
-          '& .nimbus-md-editor h3': { fontWeight: 600, fontSize: '1.15em', margin: '0.6em 0 0.4em' },
-          '& .nimbus-md-editor blockquote': {
-            borderLeft: '3px solid', borderColor: 'primary.main', paddingLeft: 12,
-            color: 'text.secondary', fontStyle: 'italic', margin: '0.5em 0',
-          },
-          '& .nimbus-md-editor pre': {
-            bgcolor: 'action.hover', borderRadius: 1, p: 1.25,
-            fontFamily: 'JetBrains Mono, monospace', fontSize: 13, overflowX: 'auto',
-          },
-          '& .nimbus-md-editor code': { fontFamily: 'JetBrains Mono, monospace', fontSize: '0.92em' },
-          '& .nimbus-md-editor ul, & .nimbus-md-editor ol': { paddingLeft: 24, margin: '0 0 0.75em' },
+          ...PROSE_SX,
+          '& .mininote-md-editor': { ...PROSE_SX['& .mininote-md-editor'], minHeight: 280 },
         }} onClick={() => editor.chain().focus().run()}>
           <EditorContent editor={editor} />
         </Box>

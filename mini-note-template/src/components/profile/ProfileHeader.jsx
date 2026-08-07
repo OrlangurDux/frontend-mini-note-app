@@ -37,7 +37,7 @@ function ProfileHeader({ t, mode, editing, onToggleEdit }) {
       <Box sx={{ p: { xs: 2.5, sm: 4 }, pt: 0 }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'flex-start', sm: 'flex-end' }}
                spacing={{ xs: 2, sm: 3 }} sx={{ mt: { xs: -6, sm: -8 } }}>
-          <window.NimbusAvatar initials="M" size={104} ring editable />
+          <window.MiniNoteAvatar initials="M" size={104} ring editable />
           <Stack spacing={0.5} sx={{ flex: 1, pb: 0.5 }}>
             <Typography variant="h5" sx={{ fontWeight: 700 }}>{t.pSampleName}</Typography>
             <Stack direction="row" spacing={1} alignItems="center" sx={{ color: 'text.secondary', flexWrap: 'wrap' }}>

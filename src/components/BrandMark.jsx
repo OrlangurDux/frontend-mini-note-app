@@ -19,7 +19,7 @@ export function BrandMark({ mode }) {
         </svg>
       </Box>
       <Typography sx={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.01em', color: ink }}>
-        Nimbus
+        MiniNote
       </Typography>
     </Stack>
   );

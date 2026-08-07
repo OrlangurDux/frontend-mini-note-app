@@ -85,8 +85,8 @@ function NoteMockup({ mode, t }) {
         <Box sx={{
           position: 'absolute', bottom: 24, right: 28,
           width: 2, height: 18, bgcolor: 'primary.main',
-          animation: 'nimbusCaret 1.1s steps(2, end) infinite',
-          '@keyframes nimbusCaret': { '50%': { opacity: 0 } },
+          animation: 'mininoteCaret 1.1s steps(2, end) infinite',
+          '@keyframes mininoteCaret': { '50%': { opacity: 0 } },
         }} />
       </Box>
     </Box>

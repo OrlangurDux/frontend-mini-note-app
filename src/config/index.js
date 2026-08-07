@@ -20,12 +20,12 @@ export const PAGINATION_DEFAULTS = {
 export const NOTE_STATUSES = ['draft', 'public', 'archive'];
 
 export const STORAGE_KEYS = {
-  authToken: 'nimbus:auth:token',
-  authExpiresAt: 'nimbus:auth:expiresAt',
-  domains: 'nimbus:domains',
-  activeDomainId: 'nimbus:domains:active',
-  noteTags: 'nimbus:noteTags', // local-only mock, not synced to backend
-  pref: (key) => 'nimbus:pref:' + key,
+  authToken: 'mininote:auth:token',
+  authExpiresAt: 'mininote:auth:expiresAt',
+  domains: 'mininote:domains',
+  activeDomainId: 'mininote:domains:active',
+  noteTags: 'mininote:noteTags', // local-only mock, not synced to backend
+  pref: (key) => 'mininote:pref:' + key,
 };
 
 // Swagger: Mini Note RESTful API v0.1.2, basePath /api/v1

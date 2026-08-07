@@ -1,4 +1,4 @@
-// src/components/BrandMark.jsx — Nimbus wordmark + cloud/bolt glyph.
+// src/components/BrandMark.jsx — MiniNote wordmark + cloud/bolt glyph.
 const { Box, Stack, Typography } = window.MUI;
 
 function BrandMark({ mode }) {
@@ -18,7 +18,7 @@ function BrandMark({ mode }) {
         </svg>
       </Box>
       <Typography sx={{ fontWeight: 700, fontSize: 18, letterSpacing: '-0.01em', color: ink }}>
-        Nimbus
+        MiniNote
       </Typography>
     </Stack>
   );

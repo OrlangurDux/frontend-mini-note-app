@@ -25,7 +25,7 @@ function LoginScreen({ t }) {
     if (Object.keys(e).length) return;
     setLoading(true);
     setTimeout(() => {
-      if (email.trim().toLowerCase() === 'demo@nimbus.app' && password === 'password') {
+      if (email.trim().toLowerCase() === 'demo@mininote.app' && password === 'password') {
         window.AuthStore.set('email', email);
         window.Router.go('success');
       } else {

@@ -23,37 +23,6 @@ import { useCategories } from '../contexts/CategoriesContext';
 import { NoteTags } from '../lib/notesTags';
 import * as notesApi from '../lib/api/notes';
 
-function renderMarkdown(md) {
-  if (!md) return [];
-  const blocks = md.split(/\n{2,}/);
-  return blocks.map((block) => {
-    const trimmed = block.trim();
-    if (/^# /.test(trimmed)) return { kind: 'h1', text: trimmed.slice(2) };
-    if (/^## /.test(trimmed)) return { kind: 'h2', text: trimmed.slice(3) };
-    if (/^### /.test(trimmed)) return { kind: 'h3', text: trimmed.slice(4) };
-    if (/^> /.test(trimmed)) return { kind: 'quote', text: trimmed.replace(/^> /gm, '') };
-    if (/^- /m.test(trimmed) && trimmed.split('\n').every((l) => /^- /.test(l) || !l.trim())) {
-      return { kind: 'ul', items: trimmed.split('\n').filter(Boolean).map((l) => l.replace(/^- /, '')) };
-    }
-    return { kind: 'p', text: trimmed };
-  });
-}
-
-function MarkdownView({ blocks }) {
-  return (
-    <Stack spacing={2}>
-      {blocks.map((b, i) => {
-        if (b.kind === 'h1') return <Typography key={i} variant="h4" sx={{ fontWeight: 700, letterSpacing: '-0.02em', mt: 1 }}>{b.text}</Typography>;
-        if (b.kind === 'h2') return <Typography key={i} variant="h5" sx={{ fontWeight: 700, letterSpacing: '-0.015em', mt: 1 }}>{b.text}</Typography>;
-        if (b.kind === 'h3') return <Typography key={i} variant="h6" sx={{ fontWeight: 600 }}>{b.text}</Typography>;
-        if (b.kind === 'quote') return <Box key={i} sx={{ borderLeft: 3, borderColor: 'primary.main', pl: 2, color: 'text.secondary', fontStyle: 'italic' }}>{b.text}</Box>;
-        if (b.kind === 'ul') return <Box key={i} component="ul" sx={{ pl: 3, m: 0 }}>{b.items.map((it, j) => <Box component="li" key={j} sx={{ mb: 0.5 }}>{it}</Box>)}</Box>;
-        return <Typography key={i} variant="body1" sx={{ lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{b.text}</Typography>;
-      })}
-    </Stack>
-  );
-}
-
 export function NoteDetailScreen({ t, mode, id, startEditing }) {
   const router = useRouter();
   const { categories, byId: categoryById } = useCategories();
@@ -93,7 +62,7 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
   const save = async () => {
     setSaving(true);
     try {
-      await notesApi.updateNote(id, { title: draft.title, note: draft.note, status: draft.status });
+      await notesApi.updateNote(id, { title: draft.title, note: draft.note, categoryId: draft.category_id || '', status: draft.status });
       NoteTags.set(id, tags);
       const fresh = await notesApi.getNote(id);
       setNote(fresh.data);
@@ -119,7 +88,6 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
     if (res?.data?.id) router.push('/notes/' + res.data.id);
   };
 
-  const blocks = renderMarkdown(note.note);
   const categoryName = categoryById[note.category_id]?.name;
 
   return (
@@ -171,7 +139,11 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
                     <MenuItem value="public">{t.nStatusPublic}</MenuItem>
                     <MenuItem value="archive">{t.nStatusArchive}</MenuItem>
                   </TextField>
-                  <TextField size="small" label={t.nCategory} value={categoryName || t.nCategoryNone} disabled sx={{ minWidth: 200 }} />
+                  <TextField select size="small" label={t.nCategory} value={draft.category_id || ''}
+                    onChange={(e) => setDraft({ ...draft, category_id: e.target.value })} sx={{ minWidth: 200 }}>
+                    <MenuItem value="">{t.nCategoryNone}</MenuItem>
+                    {categories.map((c) => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
+                  </TextField>
                 </Stack>
                 <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', rowGap: 0.75 }}>
                   {tags.map((tg) => (
@@ -201,7 +173,7 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
                   {tags.map((tg) => <Chip key={tg} label={'#' + tg} size="small" sx={{ fontFamily: 'JetBrains Mono, monospace' }} />)}
                 </Stack>
                 <Divider />
-                <MarkdownView blocks={blocks} />
+                <MarkdownEditor value={note.note} editable={false} />
               </Stack>
             )}
           </Box>

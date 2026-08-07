@@ -26,13 +26,11 @@ export function createNote({ title, note, categoryId, status }) {
   });
 }
 
-// NB: the backend's PUT /notes/{id} only accepts title/note/status —
-// category_id can only be set at creation time per the Swagger spec.
-export function updateNote(id, { title, note, status }) {
+export function updateNote(id, { title, note, categoryId, status }) {
   return apiRequest({
     ...ENDPOINTS.noteUpdate,
     pathParams: { id },
-    form: { title, note, status },
+    form: { title, note, category_id: categoryId, status },
   });
 }
 

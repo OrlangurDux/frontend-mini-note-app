@@ -13,6 +13,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import { Icon } from '../components/Icon';
 import { NotesToolbar } from '../components/notes/NotesToolbar';
 import { NoteCard } from '../components/notes/NoteCard';
@@ -40,6 +42,8 @@ export function NotesScreen({ t, mode }) {
   const [loadError, setLoadError] = useState('');
   const [confirm, setConfirm] = useState(null);
   const [toast, setToast] = useState('');
+  const [newDialog, setNewDialog] = useState(false);
+  const [newCategoryId, setNewCategoryId] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -91,9 +95,17 @@ export function NotesScreen({ t, mode }) {
   const open = (n) => router.push('/notes/' + n.id);
   const edit = (n) => router.push('/notes/' + n.id + '?edit=1');
 
-  const onNew = async () => {
+  // Category can also be changed later from the note editor, but asking up
+  // front saves a step for the common case.
+  const onNew = () => {
+    setNewCategoryId(categoryFilter || '');
+    setNewDialog(true);
+  };
+
+  const createNote = async () => {
+    setNewDialog(false);
     try {
-      const res = await notesApi.createNote({ title: t.nUntitled, note: '', categoryId: '', status: 'draft' });
+      const res = await notesApi.createNote({ title: t.nUntitled, note: '', categoryId: newCategoryId, status: 'draft' });
       const id = res?.data?.id;
       if (id) router.push('/notes/' + id + '?edit=1');
       else load();
@@ -181,6 +193,22 @@ export function NotesScreen({ t, mode }) {
           )}
         </Stack>
       </Container>
+
+      <Dialog open={newDialog} onClose={() => setNewDialog(false)} PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
+        <DialogTitle sx={{ fontWeight: 700 }}>{t.nNewDialogT}</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>{t.nNewDialogB}</DialogContentText>
+          <TextField select fullWidth size="small" label={t.nCategory}
+            value={newCategoryId} onChange={(e) => setNewCategoryId(e.target.value)}>
+            <MenuItem value="">{t.nCategoryNone}</MenuItem>
+            {categories.map((c) => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
+          </TextField>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setNewDialog(false)} sx={{ textTransform: 'none' }}>{t.nCancel}</Button>
+          <Button onClick={createNote} variant="contained" disableElevation sx={{ textTransform: 'none', borderRadius: 2 }}>{t.nCreate}</Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={!!confirm} onClose={() => setConfirm(null)} PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
         <DialogTitle sx={{ fontWeight: 700 }}>{t.nDeleteConfirmT}</DialogTitle>

@@ -3,10 +3,10 @@
 // sessionStorage-backed and flow-scoped.
 window.Prefs = {
   get: function (key, fallback) {
-    try { return localStorage.getItem('nimbus:pref:' + key) || fallback; }
+    try { return localStorage.getItem('mininote:pref:' + key) || fallback; }
     catch (e) { return fallback; }
   },
   set: function (key, val) {
-    try { localStorage.setItem('nimbus:pref:' + key, val); } catch (e) {}
+    try { localStorage.setItem('mininote:pref:' + key, val); } catch (e) {}
   },
 };

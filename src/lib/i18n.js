@@ -3,7 +3,7 @@ import { Prefs } from './prefs';
 
 const STR = {
   en: {
-    brand: 'Nimbus',
+    brand: 'MiniNote',
     register: 'Sign up',
     signIn: 'Sign in',
     welcome: 'Welcome back',
@@ -29,7 +29,7 @@ const STR = {
     successBody: 'Redirecting you to your workspace…',
     continueLabel: 'Continue to workspace',
     signOut: 'Sign out',
-    footer: '© 2026 Nimbus Labs · All systems nominal',
+    footer: '© 2026 MiniNote Labs · All systems nominal',
     errGeneric: 'Something went wrong. Please try again.',
 
     // Server / domain switcher (login screen)
@@ -43,7 +43,7 @@ const STR = {
 
     // Signup
     regTitle: 'Create your account',
-    regSubtitle: 'A free Nimbus workspace for you and up to 5 teammates.',
+    regSubtitle: 'A free MiniNote workspace for you and up to 5 teammates.',
     regSubmit: 'Create account',
     regSubmitting: 'Creating account…',
     agree1: 'I agree to the ',
@@ -133,6 +133,9 @@ const STR = {
     nLink: 'Copy link',
     nCategory: 'Category',
     nCategoryNone: 'No category',
+    nNewDialogT: 'New note',
+    nNewDialogB: 'Pick a category for this note (you can change it later).',
+    nCreate: 'Create',
     nStatus: 'Status',
     nTagsHint: 'Tags are stored locally for now (not yet synced with the server).',
     nLoadError: 'Could not load notes from this server.',
@@ -199,7 +202,7 @@ const STR = {
     // Landing
     lHeroEyebrow: 'Notes that keep up',
     lHeroTitle: 'Your second brain, finally fast.',
-    lHeroSub: 'Nimbus is a quiet, focused notebook for thinking, planning, and shipping. Capture ideas in a keystroke, organize them without folders, find anything in milliseconds.',
+    lHeroSub: 'MiniNote is a quiet, focused notebook for thinking, planning, and shipping. Capture ideas in a keystroke, organize them without folders, find anything in milliseconds.',
     lHeroCta: 'Start free',
     lHeroAlt: 'Sign in',
     lHeroBadges: ['No credit card', 'Free for 5 teammates', 'End-to-end encrypted'],
@@ -259,7 +262,7 @@ const STR = {
     lNoteSampleLink: 'See linked: [[Roadmap Q4]]',
   },
   ru: {
-    brand: 'Nimbus',
+    brand: 'MiniNote',
     register: 'Регистрация',
     signIn: 'Войти',
     welcome: 'С возвращением',
@@ -285,7 +288,7 @@ const STR = {
     successBody: 'Перенаправляем в рабочее пространство…',
     continueLabel: 'Перейти в рабочее пространство',
     signOut: 'Выйти',
-    footer: '© 2026 Nimbus Labs · Все системы в норме',
+    footer: '© 2026 MiniNote Labs · Все системы в норме',
     errGeneric: 'Что-то пошло не так. Попробуйте ещё раз.',
 
     srvTitle: 'Настройки сервера',
@@ -297,7 +300,7 @@ const STR = {
     srvRemove: 'Удалить',
 
     regTitle: 'Создайте аккаунт',
-    regSubtitle: 'Бесплатное пространство Nimbus для вас и до 5 коллег.',
+    regSubtitle: 'Бесплатное пространство MiniNote для вас и до 5 коллег.',
     regSubmit: 'Создать аккаунт',
     regSubmitting: 'Создаём аккаунт…',
     agree1: 'Я принимаю ',
@@ -384,6 +387,9 @@ const STR = {
     nLink: 'Скопировать ссылку',
     nCategory: 'Категория',
     nCategoryNone: 'Без категории',
+    nNewDialogT: 'Новая заметка',
+    nNewDialogB: 'Выберите категорию для заметки (её можно будет изменить позже).',
+    nCreate: 'Создать',
     nStatus: 'Статус',
     nTagsHint: 'Теги пока хранятся локально (не синхронизируются с сервером).',
     nLoadError: 'Не удалось загрузить заметки с этого сервера.',
@@ -447,7 +453,7 @@ const STR = {
 
     lHeroEyebrow: 'Заметки, которые не отстают',
     lHeroTitle: 'Ваш второй мозг — наконец быстрый.',
-    lHeroSub: 'Nimbus — спокойный и сфокусированный блокнот для мыслей, планов и работы. Записывайте идеи одним нажатием, организуйте без папок, находите за миллисекунды.',
+    lHeroSub: 'MiniNote — спокойный и сфокусированный блокнот для мыслей, планов и работы. Записывайте идеи одним нажатием, организуйте без папок, находите за миллисекунды.',
     lHeroCta: 'Начать бесплатно',
     lHeroAlt: 'Войти',
     lHeroBadges: ['Без карты', 'Бесплатно для 5 коллег', 'Сквозное шифрование'],
