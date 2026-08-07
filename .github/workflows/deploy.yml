@@ -50,11 +50,11 @@ jobs:
             type=ref,event=tag
             type=raw,value=latest
 
-      # Build args mirror docker-compose.yml's production build. Override
-      # the defaults via repo Settings -> Secrets and variables -> Actions ->
-      # Variables if this deployment should point at a different API by
-      # default (the app's in-browser domain switcher can also override it
-      # per-user at runtime, so this is only the seed value).
+      # NEXT_PUBLIC_* get baked into the client bundle at build time — this
+      # is just the seed default (the app's in-browser domain switcher can
+      # override it per-user at runtime). Override via repo Settings ->
+      # Secrets and variables -> Actions -> Variables if it should differ
+      # from the production API.
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
@@ -65,7 +65,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            USER=${{ vars.APP_UID || '1000' }}
-            GROUP=${{ vars.APP_GID || '1000' }}
-            NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:9077/api/v1' }}
+            NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL || 'https://mini-note.orlangur.link/api/v1' }}
             NEXT_PUBLIC_SIGNUP_CONFIRMATION_MODE=${{ vars.NEXT_PUBLIC_SIGNUP_CONFIRMATION_MODE || 'simple' }}
