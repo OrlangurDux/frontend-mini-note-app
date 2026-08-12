@@ -97,7 +97,7 @@ export function AppHeader({ mode, lang, t, variant = 'public', onToggleTheme, on
                 </Link>
                 <Link href="/signup" style={{ textDecoration: 'none' }}>
                   <Button variant="contained" disableElevation
-                    sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2, px: 2.25, py: 0.9, fontSize: 14 }}>
+                    sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2, px: 2.25, py: 0.9, fontSize: 14, whiteSpace: 'nowrap' }}>
                     {t.register}
                   </Button>
                 </Link>
