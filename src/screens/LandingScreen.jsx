@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Head from 'next/head';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -8,6 +9,7 @@ import Chip from '@mui/material/Chip';
 import { Icon } from '../components/Icon';
 import { NoteMockup } from '../components/landing/NoteMockup';
 import { FeaturesSection, WorkflowSection, StatsQuoteSection, CtaBand } from '../components/landing/LandingSections';
+import { softwareAppJsonLd } from '../lib/seo';
 
 function HeroSection({ mode, t }) {
   return (
@@ -64,6 +66,10 @@ function HeroSection({ mode, t }) {
 export function LandingScreen({ t, mode }) {
   return (
     <Box>
+      <Head>
+        {/* eslint-disable-next-line react/no-danger */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd()) }} />
+      </Head>
       <HeroSection mode={mode} t={t} />
       <FeaturesSection mode={mode} t={t} />
       <WorkflowSection mode={mode} t={t} />

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -13,8 +14,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import { Icon } from '../components/Icon';
 import { NotesToolbar } from '../components/notes/NotesToolbar';
 import { NoteCard } from '../components/notes/NoteCard';
@@ -42,8 +41,6 @@ export function NotesScreen({ t, mode }) {
   const [loadError, setLoadError] = useState('');
   const [confirm, setConfirm] = useState(null);
   const [toast, setToast] = useState('');
-  const [newDialog, setNewDialog] = useState(false);
-  const [newCategoryId, setNewCategoryId] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -95,17 +92,12 @@ export function NotesScreen({ t, mode }) {
   const open = (n) => router.push('/notes/' + n.id);
   const edit = (n) => router.push('/notes/' + n.id + '?edit=1');
 
-  // Category can also be changed later from the note editor, but asking up
-  // front saves a step for the common case.
-  const onNew = () => {
-    setNewCategoryId(categoryFilter || '');
-    setNewDialog(true);
-  };
-
-  const createNote = async () => {
-    setNewDialog(false);
+  // Category can be picked/changed right in the note editor, so creation
+  // itself doesn't need to ask up front — pre-fill from the active filter
+  // if there is one, since that's the most likely intent.
+  const onNew = async () => {
     try {
-      const res = await notesApi.createNote({ title: t.nUntitled, note: '', categoryId: newCategoryId, status: 'draft' });
+      const res = await notesApi.createNote({ title: t.nUntitled, note: '', categoryId: categoryFilter || '', status: 'draft' });
       const id = res?.data?.id;
       if (id) router.push('/notes/' + id + '?edit=1');
       else load();
@@ -146,6 +138,7 @@ export function NotesScreen({ t, mode }) {
         ? 'radial-gradient(1000px 600px at 90% 0%, rgba(25,118,210,.10), transparent 60%)'
         : 'radial-gradient(1000px 600px at 90% 0%, rgba(144,202,249,.18), transparent 60%)',
     }}>
+      <NextSeo title={t.nSeoTitle} noindex nofollow />
       <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={3}>
           <NotesToolbar t={t}
@@ -193,22 +186,6 @@ export function NotesScreen({ t, mode }) {
           )}
         </Stack>
       </Container>
-
-      <Dialog open={newDialog} onClose={() => setNewDialog(false)} PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
-        <DialogTitle sx={{ fontWeight: 700 }}>{t.nNewDialogT}</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ mb: 2 }}>{t.nNewDialogB}</DialogContentText>
-          <TextField select fullWidth size="small" label={t.nCategory}
-            value={newCategoryId} onChange={(e) => setNewCategoryId(e.target.value)}>
-            <MenuItem value="">{t.nCategoryNone}</MenuItem>
-            {categories.map((c) => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
-          </TextField>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setNewDialog(false)} sx={{ textTransform: 'none' }}>{t.nCancel}</Button>
-          <Button onClick={createNote} variant="contained" disableElevation sx={{ textTransform: 'none', borderRadius: 2 }}>{t.nCreate}</Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog open={!!confirm} onClose={() => setConfirm(null)} PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
         <DialogTitle sx={{ fontWeight: 700 }}>{t.nDeleteConfirmT}</DialogTitle>

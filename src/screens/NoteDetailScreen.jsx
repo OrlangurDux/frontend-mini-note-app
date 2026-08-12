@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -97,6 +98,7 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
         ? 'radial-gradient(1000px 600px at 10% 0%, rgba(25,118,210,.08), transparent 60%)'
         : 'radial-gradient(1000px 600px at 10% 0%, rgba(144,202,249,.18), transparent 60%)',
     }}>
+      <NextSeo title={note.title || t.nUntitled} noindex nofollow />
       <Container maxWidth="md" sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={3}>
           <Stack direction="row" alignItems="center" spacing={1}>

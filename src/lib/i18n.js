@@ -32,6 +32,14 @@ const STR = {
     footer: '© 2026 MiniNote Labs · All systems nominal',
     errGeneric: 'Something went wrong. Please try again.',
 
+    // Offline mode
+    offlineBadge: 'Offline',
+    syncingBadge: 'Syncing…',
+    offlineTooltip: 'No connection — changes are saved on this device and will sync automatically once you’re back online.',
+    syncingTooltip: 'Back online — sending your offline changes.',
+    pendingTooltipPrefix: 'Pending changes: ',
+    offlineDisabledHint: 'Unavailable offline',
+
     // Server / domain switcher (login screen)
     srvTitle: 'Server settings',
     srvActive: 'Active server',
@@ -85,6 +93,7 @@ const STR = {
 
     // Notes
     nTitle: 'Notes',
+    nSeoTitle: 'My notes',
     nSubtitle: 'Search, browse, and revisit your thinking.',
     nNew: 'New note',
     nSearch: 'Search notes…',
@@ -133,9 +142,6 @@ const STR = {
     nLink: 'Copy link',
     nCategory: 'Category',
     nCategoryNone: 'No category',
-    nNewDialogT: 'New note',
-    nNewDialogB: 'Pick a category for this note (you can change it later).',
-    nCreate: 'Create',
     nStatus: 'Status',
     nTagsHint: 'Tags are stored locally for now (not yet synced with the server).',
     nLoadError: 'Could not load notes from this server.',
@@ -174,6 +180,7 @@ const STR = {
     pNavAbout: 'Profile',
     pNavSecurity: 'Security',
     pNavDanger: 'Danger zone',
+    pSeoTitlePrefix: 'User profile: ',
     pSecAbout: 'About you',
     pSecAboutSub: 'Your display name and avatar.',
     pName: 'Display name',
@@ -291,6 +298,14 @@ const STR = {
     footer: '© 2026 MiniNote Labs · Все системы в норме',
     errGeneric: 'Что-то пошло не так. Попробуйте ещё раз.',
 
+    // Офлайн-режим
+    offlineBadge: 'Офлайн',
+    syncingBadge: 'Синхронизация…',
+    offlineTooltip: 'Нет соединения — изменения сохраняются на этом устройстве и отправятся автоматически, когда связь восстановится.',
+    syncingTooltip: 'Связь восстановлена — отправляем накопленные офлайн-изменения.',
+    pendingTooltipPrefix: 'Ожидают отправки: ',
+    offlineDisabledHint: 'Недоступно офлайн',
+
     srvTitle: 'Настройки сервера',
     srvActive: 'Активный сервер',
     srvAdd: 'Добавить сервер',
@@ -339,6 +354,7 @@ const STR = {
     fpDoneCta: 'Перейти ко входу',
 
     nTitle: 'Заметки',
+    nSeoTitle: 'Список заметок',
     nSubtitle: 'Поиск, просмотр и возврат к идеям.',
     nNew: 'Новая заметка',
     nSearch: 'Поиск по заметкам…',
@@ -387,9 +403,6 @@ const STR = {
     nLink: 'Скопировать ссылку',
     nCategory: 'Категория',
     nCategoryNone: 'Без категории',
-    nNewDialogT: 'Новая заметка',
-    nNewDialogB: 'Выберите категорию для заметки (её можно будет изменить позже).',
-    nCreate: 'Создать',
     nStatus: 'Статус',
     nTagsHint: 'Теги пока хранятся локально (не синхронизируются с сервером).',
     nLoadError: 'Не удалось загрузить заметки с этого сервера.',
@@ -426,6 +439,7 @@ const STR = {
     pNavAbout: 'Профиль',
     pNavSecurity: 'Безопасность',
     pNavDanger: 'Опасная зона',
+    pSeoTitlePrefix: 'Профиль пользователя ',
     pSecAbout: 'О вас',
     pSecAboutSub: 'Отображаемое имя и аватар.',
     pName: 'Отображаемое имя',

@@ -6,6 +6,10 @@
 export const DEFAULT_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:9077/api/v1';
 
+// Public site origin — used for SEO (canonical/OG urls, JSON-LD), not the
+// API. Distinct from DEFAULT_API_BASE_URL on purpose.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mini-note.app';
+
 // 'simple'    — register -> auto-login -> redirect to /notes
 // 'mock-code' — register -> signup-sent -> mocked confirmation code (no
 //               backend call) -> auto-login -> redirect to /notes

@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { BrandMark } from './BrandMark';
 import { Icon } from './Icon';
 import { Avatar } from './profile/Avatar';
+import { OfflineBadge } from './OfflineBadge';
 import { useAuth } from '../contexts/AuthContext';
 import { resolveAssetUrl } from '../lib/domains';
 
@@ -71,6 +72,7 @@ export function AppHeader({ mode, lang, t, variant = 'public', onToggleTheme, on
                 }
               </IconButton>
             </Tooltip>
+            {showApp && <OfflineBadge t={t} />}
             <Box sx={{ width: 1, height: 20, bgcolor: 'divider', mx: { xs: 0.5, sm: 1 } }} />
             {showApp ? (
               <Stack direction="row" alignItems="center" spacing={1.25}>
