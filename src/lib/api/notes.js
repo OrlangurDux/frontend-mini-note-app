@@ -15,14 +15,15 @@ async function resolveId(id) {
   return resolveRedirectedId(NotesCache, id);
 }
 
-export async function listNotes({ page, perPage }) {
+export async function listNotes({ page, perPage, favorite }) {
   return withOfflineFallback(
-    () => remote.listNotes({ page, perPage }).then((res) => {
+    () => remote.listNotes({ page, perPage, favorite }).then((res) => {
       NotesCache.mergeFromServer(res?.data?.items || []);
       return res;
     }),
     async () => {
-      const items = await NotesCache.listAll();
+      let items = await NotesCache.listAll();
+      if (favorite) items = items.filter((n) => !!n.favorite);
       items.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
       const start = (page - 1) * perPage;
       return { success: true, status: 200, data: { items: items.slice(start, start + perPage), total: items.length } };
@@ -126,6 +127,25 @@ export async function deleteNote(rawId) {
       }
       await enqueueMutation('note', 'delete', id, null);
       return { success: true, status: 200, data: null };
+    },
+  );
+}
+
+export async function toggleFavorite(rawId) {
+  const id = await resolveId(rawId);
+  return withOfflineFallback(
+    () => remote.toggleFavorite(id).then(async (res) => {
+      const existing = await NotesCache.getOne(id);
+      const favorite = !(existing?.favorite);
+      await NotesCache.putOne({ ...(existing || { id }), favorite, _dirty: false, _deleted: false });
+      return { ...res, data: { ...(existing || {}), id, favorite } };
+    }),
+    async () => {
+      const existing = await NotesCache.getOne(id);
+      const favorite = !(existing?.favorite);
+      const mutation = await enqueueMutation('note', 'favorite', id, null);
+      await NotesCache.putOne({ ...(existing || { id }), favorite, _dirty: !!mutation, _deleted: false });
+      return { success: true, status: 200, data: { ...(existing || {}), id, favorite } };
     },
   );
 }

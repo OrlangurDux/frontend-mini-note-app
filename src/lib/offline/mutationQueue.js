@@ -14,6 +14,20 @@ export async function enqueueMutation(entity, op, id, payload) {
     const store = stores.mutations;
     const existing = await forId(store, entity, id);
 
+    if (op === 'favorite') {
+      // Independent of create/update/delete — a toggle just flips a flag,
+      // so two queued toggles for the same id cancel out to nothing rather
+      // than replaying twice.
+      const pending = existing.find((m) => m.op === 'favorite');
+      if (pending) {
+        await reqToPromise(store.delete(pending.seq));
+        return null;
+      }
+      const rec = { entity, op: 'favorite', id, payload: null, createdAt: Date.now() };
+      const seq = await reqToPromise(store.add(rec));
+      return { ...rec, seq };
+    }
+
     if (op === 'delete') {
       for (const m of existing) await reqToPromise(store.delete(m.seq));
       // Never made it to the server (still a local-only create) — nothing to send.

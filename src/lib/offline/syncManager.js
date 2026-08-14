@@ -28,6 +28,7 @@ async function replay(m) {
   if (m.entity === 'note') {
     if (m.op === 'create') return notesRemote.createNote(m.payload);
     if (m.op === 'update') return notesRemote.updateNote(m.id, m.payload);
+    if (m.op === 'favorite') return notesRemote.toggleFavorite(m.id);
     return notesRemote.deleteNote(m.id);
   }
   if (m.op === 'create') return categoriesRemote.createCategory(m.payload);
@@ -68,6 +69,14 @@ async function afterDeleteSuccess(m) {
   await cache.removeOne(m.id);
 }
 
+// The `favorite` flag was already flipped optimistically in the cache when
+// the toggle was queued — nothing to merge back, just clear `_dirty` now
+// that the server agrees.
+async function afterFavoriteSuccess(m) {
+  const existing = await NotesCache.getOne(m.id);
+  if (existing) await NotesCache.putOne({ ...existing, _dirty: false });
+}
+
 export async function drainQueue() {
   if (draining) return;
   draining = true;
@@ -81,6 +90,7 @@ export async function drainQueue() {
         const res = await replay(m);
         if (m.op === 'create') await afterCreateSuccess(m, res);
         else if (m.op === 'update') await afterUpdateSuccess(m, res);
+        else if (m.op === 'favorite') await afterFavoriteSuccess(m);
         else await afterDeleteSuccess(m);
         await removeMutation(m.seq);
         emit({ type: 'progress', remaining: queue.length - 1 });

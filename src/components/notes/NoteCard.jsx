@@ -10,8 +10,19 @@ import { Icon } from '../Icon';
 import { stripMarkdown } from '../../lib/markdown';
 
 const STATUS_COLOR = { draft: 'default', public: 'success', archive: 'warning' };
+const STAR_D = 'M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2Z';
 
-export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, onDuplicate, onDelete }) {
+function FavoriteButton({ t, favorite, onToggle, size }) {
+  return (
+    <IconButton size="small" onClick={(e) => { e.stopPropagation(); onToggle(); }}
+      aria-label={favorite ? t.nUnfavorite : t.nFavorite} title={favorite ? t.nUnfavorite : t.nFavorite}
+      sx={{ color: favorite ? '#f5a623' : 'text.secondary' }}>
+      <Icon d={STAR_D} size={size} fill={favorite ? 'currentColor' : 'none'} />
+    </IconButton>
+  );
+}
+
+export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, onDuplicate, onDelete, onToggleFavorite }) {
   const [anchor, setAnchor] = useState(null);
   const close = () => setAnchor(null);
   const updated = note.updated_at ? new Date(note.updated_at).toLocaleString() : '';
@@ -61,6 +72,7 @@ export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, on
         <Typography variant="caption" color="text.secondary" sx={{ minWidth: 140, textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}>
           {updated}
         </Typography>
+        <FavoriteButton t={t} favorite={note.favorite} onToggle={() => onToggleFavorite(note)} size={16} />
         {More}
       </Stack>
     );
@@ -79,6 +91,7 @@ export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, on
         <Typography sx={{ fontWeight: 700, fontSize: 16, lineHeight: 1.3, flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {note.title || t.nUntitled}
         </Typography>
+        <FavoriteButton t={t} favorite={note.favorite} onToggle={() => onToggleFavorite(note)} size={18} />
         <Chip size="small" label={statusLabel} color={STATUS_COLOR[note.status]} variant="outlined" sx={{ height: 18, fontSize: 10 }} />
       </Stack>
       {categoryName && <Chip size="small" label={categoryName} variant="outlined" sx={{ alignSelf: 'flex-start', height: 20, fontSize: 11 }} />}

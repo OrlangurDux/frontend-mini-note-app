@@ -51,6 +51,11 @@ export const ENDPOINTS = {
   noteGet: { method: 'GET', path: '/notes/{id}' },
   noteUpdate: { method: 'PUT', path: '/notes/{id}' },
   noteDelete: { method: 'DELETE', path: '/notes/{id}' },
+  // Toggles: first call favorites the note, next call un-favorites it.
+  // The swagger doc (GET /notes/favorite/{id}) is wrong — the deployed
+  // server only accepts PUT on this route (confirmed by probing every
+  // method; GET/POST/PATCH all 405).
+  noteFavorite: { method: 'PUT', path: '/notes/favorite/{id}' },
 
   categoriesList: { method: 'GET', path: '/categories' },
   categoriesCreate: { method: 'POST', path: '/categories' },

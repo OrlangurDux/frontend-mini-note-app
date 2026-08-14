@@ -1,10 +1,10 @@
 import { ENDPOINTS } from '../../config';
 import { apiRequest } from '../apiClient';
 
-export function listNotes({ page, perPage }) {
+export function listNotes({ page, perPage, favorite }) {
   return apiRequest({
     ...ENDPOINTS.notesList,
-    query: { page, per_page: perPage },
+    query: { page, per_page: perPage, favorite: favorite ? 'true' : undefined },
   });
 }
 
@@ -36,4 +36,8 @@ export function updateNote(id, { title, note, categoryId, status }) {
 
 export function deleteNote(id) {
   return apiRequest({ ...ENDPOINTS.noteDelete, pathParams: { id } });
+}
+
+export function toggleFavorite(id) {
+  return apiRequest({ ...ENDPOINTS.noteFavorite, pathParams: { id } });
 }

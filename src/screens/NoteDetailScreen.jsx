@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Chip from '@mui/material/Chip';
@@ -24,6 +25,8 @@ import { useCategories } from '../contexts/CategoriesContext';
 import { NoteTags } from '../lib/notesTags';
 import * as notesApi from '../lib/api/notes';
 
+const STAR_D = 'M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2Z';
+
 export function NoteDetailScreen({ t, mode, id, startEditing }) {
   const router = useRouter();
   const { categories, byId: categoryById } = useCategories();
@@ -35,6 +38,7 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
   const [tags, setTags] = useState([]);
   const [confirm, setConfirm] = useState(false);
   const [toast, setToast] = useState('');
+  const [toastSeverity, setToastSeverity] = useState('success');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -69,6 +73,7 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
       setNote(fresh.data);
       setDraft(fresh.data);
       setEditing(false);
+      setToastSeverity('success');
       setToast(t.nSavedToast);
     } catch (err) {
       setLoadError(err.message || t.errGeneric);
@@ -82,6 +87,18 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
     NoteTags.remove(id);
     setConfirm(false);
     router.push('/notes');
+  };
+
+  const toggleFavorite = async () => {
+    const wasFavorite = !!note.favorite;
+    setNote({ ...note, favorite: !wasFavorite });
+    try {
+      await notesApi.toggleFavorite(id);
+    } catch (err) {
+      setNote({ ...note, favorite: wasFavorite });
+      setToastSeverity('error');
+      setToast(err.message || t.nFavoriteError);
+    }
   };
 
   const duplicate = async () => {
@@ -106,6 +123,12 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
                     startIcon={<Icon d="M15 6l-6 6 6 6" size={16} sw={2} />}
                     sx={{ textTransform: 'none', color: 'text.secondary', fontWeight: 500 }}>{t.nBack}</Button>
             <Box sx={{ flex: 1 }} />
+            <Tooltip title={note.favorite ? t.nUnfavorite : t.nFavorite} arrow>
+              <IconButton size="small" onClick={toggleFavorite} aria-label={note.favorite ? t.nUnfavorite : t.nFavorite}
+                sx={{ color: note.favorite ? '#f5a623' : 'text.secondary' }}>
+                <Icon d={STAR_D} size={18} fill={note.favorite ? 'currentColor' : 'none'} />
+              </IconButton>
+            </Tooltip>
             <Chip size="small" label={editing ? t.nEditing : t.nReadOnly} variant="outlined"
                   sx={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: editing ? 'primary.main' : 'text.secondary', borderColor: editing ? 'primary.main' : 'divider' }} />
             {editing ? (
@@ -160,9 +183,9 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
                     } }}
                     InputProps={{ disableUnderline: true, sx: { fontFamily: 'JetBrains Mono, monospace', fontSize: 13, ml: 0.5 } }} />
                 </Stack>
-                <MarkdownEditor t={t} value={draft.note}
+                <MarkdownEditor mode={mode} value={draft.note}
                   onChange={(v) => setDraft({ ...draft, note: v })}
-                  placeholder="# Title&#10;&#10;Write in markdown…" />
+                  placeholder="Write in markdown…" />
               </Stack>
             ) : (
               <Stack spacing={2}>
@@ -197,7 +220,7 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
       </Dialog>
 
       <Snackbar open={!!toast} autoHideDuration={1800} onClose={() => setToast('')} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity="success" variant="filled" sx={{ borderRadius: 2 }}>{toast}</Alert>
+        <Alert severity={toastSeverity} variant="filled" sx={{ borderRadius: 2 }}>{toast}</Alert>
       </Snackbar>
     </Box>
   );
