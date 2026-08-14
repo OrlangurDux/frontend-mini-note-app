@@ -1,3 +1,6 @@
 **/src/node_modules
 **/src/npm-debug.log
+**/src/.next
 build
+.git
+mini-note-template

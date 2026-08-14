@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -14,8 +15,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
+import Tooltip from '@mui/material/Tooltip';
 import { Avatar } from '../components/profile/Avatar';
 import { useAuth } from '../contexts/AuthContext';
+import { useNetwork } from '../contexts/NetworkContext';
 import { resolveAssetUrl } from '../lib/domains';
 import * as profileApi from '../lib/api/profile';
 import * as authApi from '../lib/api/auth';
@@ -39,6 +42,7 @@ function Card({ title, subtitle, danger, children }) {
 export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
   const router = useRouter();
   const { user, setUser, logout } = useAuth();
+  const { isOnline } = useNetwork();
   const fileRef = useRef(null);
 
   const [name, setName] = useState('');
@@ -109,6 +113,7 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
         ? 'radial-gradient(1000px 600px at 90% 0%, rgba(25,118,210,.10), transparent 60%)'
         : 'radial-gradient(1000px 600px at 90% 0%, rgba(144,202,249,.18), transparent 60%)',
     }}>
+      <NextSeo title={t.pSeoTitlePrefix + (user?.name || user?.email || '')} noindex nofollow />
       <Container maxWidth="sm" sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={3}>
           {error && <Alert severity="error" variant="outlined" sx={{ borderRadius: 2 }}>{error}</Alert>}
@@ -117,16 +122,21 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
             <Box component="form" onSubmit={saveAbout}>
               <Stack spacing={2.5}>
                 <Stack direction="row" spacing={2} alignItems="center">
-                  <Avatar src={avatarFile ? URL.createObjectURL(avatarFile) : resolveAssetUrl(user?.avatar)} initials={initials} size={72} ring editable onEdit={() => fileRef.current?.click()} />
-                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickAvatar} />
+                  <Avatar src={avatarFile ? URL.createObjectURL(avatarFile) : resolveAssetUrl(user?.avatar)} initials={initials} size={72} ring
+                          editable={isOnline} onEdit={() => isOnline && fileRef.current?.click()} />
+                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickAvatar} disabled={!isOnline} />
                   <Stack spacing={0}>
                     <Typography sx={{ fontWeight: 600 }}>{user?.email}</Typography>
-                    <Typography variant="caption" color="text.secondary">{t.pAvatarChange}</Typography>
+                    <Typography variant="caption" color="text.secondary">{isOnline ? t.pAvatarChange : t.offlineDisabledHint}</Typography>
                   </Stack>
                 </Stack>
-                <TextField label={t.pName} value={name} onChange={(e) => setName(e.target.value)} fullWidth />
-                <Button type="submit" disabled={savingAbout} variant="contained" disableElevation
-                        sx={{ textTransform: 'none', borderRadius: 2, alignSelf: 'flex-start' }}>{t.pSave}</Button>
+                <TextField label={t.pName} value={name} onChange={(e) => setName(e.target.value)} fullWidth disabled={!isOnline} />
+                <Tooltip title={isOnline ? '' : t.offlineDisabledHint}>
+                  <span>
+                    <Button type="submit" disabled={savingAbout || !isOnline} variant="contained" disableElevation
+                            sx={{ textTransform: 'none', borderRadius: 2, alignSelf: 'flex-start' }}>{t.pSave}</Button>
+                  </span>
+                </Tooltip>
               </Stack>
             </Box>
           </Card>
@@ -135,9 +145,13 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
             <Box component="form" onSubmit={savePassword}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField type="password" label={t.pNewPassword} value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)} fullWidth />
-                <Button type="submit" disabled={savingPassword || !newPassword} variant="outlined"
-                        sx={{ textTransform: 'none', borderRadius: 2, whiteSpace: 'nowrap' }}>{t.pChangePassword}</Button>
+                  onChange={(e) => setNewPassword(e.target.value)} fullWidth disabled={!isOnline} />
+                <Tooltip title={isOnline ? '' : t.offlineDisabledHint}>
+                  <span>
+                    <Button type="submit" disabled={savingPassword || !newPassword || !isOnline} variant="outlined"
+                            sx={{ textTransform: 'none', borderRadius: 2, whiteSpace: 'nowrap' }}>{t.pChangePassword}</Button>
+                  </span>
+                </Tooltip>
               </Stack>
             </Box>
           </Card>
@@ -167,7 +181,11 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
                 <Typography sx={{ fontSize: 14.5, fontWeight: 500 }}>{t.pDelete}</Typography>
                 <Typography variant="caption" color="text.secondary">{t.pDeleteHint}</Typography>
               </Stack>
-              <Button variant="outlined" color="error" onClick={() => setConfirmDelete(true)} sx={{ textTransform: 'none', borderRadius: 2 }}>{t.pDelete}</Button>
+              <Tooltip title={isOnline ? '' : t.offlineDisabledHint}>
+                <span>
+                  <Button variant="outlined" color="error" disabled={!isOnline} onClick={() => setConfirmDelete(true)} sx={{ textTransform: 'none', borderRadius: 2 }}>{t.pDelete}</Button>
+                </span>
+              </Tooltip>
             </Stack>
           </Card>
         </Stack>

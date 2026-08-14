@@ -6,6 +6,10 @@
 export const DEFAULT_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:9077/api/v1';
 
+// Public site origin — used for SEO (canonical/OG urls, JSON-LD), not the
+// API. Distinct from DEFAULT_API_BASE_URL on purpose.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://mini-note.app';
+
 // 'simple'    — register -> auto-login -> redirect to /notes
 // 'mock-code' — register -> signup-sent -> mocked confirmation code (no
 //               backend call) -> auto-login -> redirect to /notes
@@ -47,6 +51,11 @@ export const ENDPOINTS = {
   noteGet: { method: 'GET', path: '/notes/{id}' },
   noteUpdate: { method: 'PUT', path: '/notes/{id}' },
   noteDelete: { method: 'DELETE', path: '/notes/{id}' },
+  // Toggles: first call favorites the note, next call un-favorites it.
+  // The swagger doc (GET /notes/favorite/{id}) is wrong — the deployed
+  // server only accepts PUT on this route (confirmed by probing every
+  // method; GET/POST/PATCH all 405).
+  noteFavorite: { method: 'PUT', path: '/notes/favorite/{id}' },
 
   categoriesList: { method: 'GET', path: '/categories' },
   categoriesCreate: { method: 'POST', path: '/categories' },

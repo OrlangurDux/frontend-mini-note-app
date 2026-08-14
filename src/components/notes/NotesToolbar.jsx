@@ -12,8 +12,10 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Icon } from '../Icon';
 
+const STAR_D = 'M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2Z';
+
 export function NotesToolbar({
-  t, query, onQuery, status, onStatus, categoryId, onCategoryId, categories,
+  t, query, onQuery, status, onStatus, favoriteOnly, onFavoriteOnly, categoryId, onCategoryId, categories,
   tag, onTag, allTags, sort, onSort, view, onView, onNew,
 }) {
   return (
@@ -83,6 +85,9 @@ export function NotesToolbar({
         <Chip label={t.nStatusDraft} variant={status === 'draft' ? 'filled' : 'outlined'} color={status === 'draft' ? 'primary' : 'default'} onClick={() => onStatus('draft')} />
         <Chip label={t.nStatusPublic} variant={status === 'public' ? 'filled' : 'outlined'} color={status === 'public' ? 'primary' : 'default'} onClick={() => onStatus('public')} />
         <Chip label={t.nStatusArchive} variant={status === 'archive' ? 'filled' : 'outlined'} color={status === 'archive' ? 'primary' : 'default'} onClick={() => onStatus('archive')} />
+        <Chip icon={<Icon d={STAR_D} size={14} fill={favoriteOnly ? 'currentColor' : 'none'} />}
+              label={t.nFavoritesOnly} variant={favoriteOnly ? 'filled' : 'outlined'} color={favoriteOnly ? 'primary' : 'default'}
+              onClick={() => onFavoriteOnly(!favoriteOnly)} />
         <Box sx={{ width: 1, height: 24, bgcolor: 'divider', mx: 0.5, alignSelf: 'center' }} />
         {allTags.map((tg) => (
           <Chip key={tg} label={'#' + tg} size="small"

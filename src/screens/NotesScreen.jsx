@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -13,8 +14,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import { Icon } from '../components/Icon';
 import { NotesToolbar } from '../components/notes/NotesToolbar';
 import { NoteCard } from '../components/notes/NoteCard';
@@ -34,6 +33,7 @@ export function NotesScreen({ t, mode }) {
   const [perPage, setPerPage] = useState(PAGINATION_DEFAULTS.perPage);
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
+  const [favoriteOnly, setFavoriteOnly] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [tag, setTag] = useState('');
   const [sort, setSort] = useState('updated');
@@ -42,8 +42,6 @@ export function NotesScreen({ t, mode }) {
   const [loadError, setLoadError] = useState('');
   const [confirm, setConfirm] = useState(null);
   const [toast, setToast] = useState('');
-  const [newDialog, setNewDialog] = useState(false);
-  const [newCategoryId, setNewCategoryId] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -56,7 +54,7 @@ export function NotesScreen({ t, mode }) {
         setItems(list);
         setTotal(list.length);
       } else {
-        const res = await notesApi.listNotes({ page: page + 1, perPage });
+        const res = await notesApi.listNotes({ page: page + 1, perPage, favorite: favoriteOnly });
         setItems(res?.data?.items || []);
         setTotal(res?.data?.total || 0);
       }
@@ -67,16 +65,20 @@ export function NotesScreen({ t, mode }) {
     } finally {
       setLoading(false);
     }
-  }, [page, perPage, query, t.nLoadError]);
+  }, [page, perPage, query, favoriteOnly, t.nLoadError]);
 
   useEffect(() => { load(); }, [load]);
-  useEffect(() => { setPage(0); }, [query]);
+  useEffect(() => { setPage(0); }, [query, favoriteOnly]);
 
   // Status/category/tag filters and sorting only apply to the page/results
   // already fetched — the backend has no filter/sort query params yet.
+  // `favorite` is already applied server-side above (except in search mode,
+  // where the search endpoint has no such param) — filtering again here is
+  // a no-op once the list endpoint already did it, and covers search mode.
   const filtered = useMemo(() => {
     let xs = items.slice();
     if (status !== 'all') xs = xs.filter((n) => n.status === status);
+    if (favoriteOnly) xs = xs.filter((n) => !!n.favorite);
     if (categoryFilter) xs = xs.filter((n) => n.category_id === categoryFilter);
     if (tag) xs = xs.filter((n) => NoteTags.get(n.id).includes(tag));
     const cmp = {
@@ -87,7 +89,7 @@ export function NotesScreen({ t, mode }) {
     };
     xs.sort(cmp[sort] || cmp.updated);
     return xs;
-  }, [items, status, categoryFilter, tag, sort]);
+  }, [items, status, favoriteOnly, categoryFilter, tag, sort]);
 
   const allTags = useMemo(() => NoteTags.allTags(), [items]);
   const pageCount = Math.max(1, Math.ceil(total / perPage));
@@ -95,17 +97,12 @@ export function NotesScreen({ t, mode }) {
   const open = (n) => router.push('/notes/' + n.id);
   const edit = (n) => router.push('/notes/' + n.id + '?edit=1');
 
-  // Category can also be changed later from the note editor, but asking up
-  // front saves a step for the common case.
-  const onNew = () => {
-    setNewCategoryId(categoryFilter || '');
-    setNewDialog(true);
-  };
-
-  const createNote = async () => {
-    setNewDialog(false);
+  // Category can be picked/changed right in the note editor, so creation
+  // itself doesn't need to ask up front — pre-fill from the active filter
+  // if there is one, since that's the most likely intent.
+  const onNew = async () => {
     try {
-      const res = await notesApi.createNote({ title: t.nUntitled, note: '', categoryId: newCategoryId, status: 'draft' });
+      const res = await notesApi.createNote({ title: t.nUntitled, note: '', categoryId: categoryFilter || '', status: 'draft' });
       const id = res?.data?.id;
       if (id) router.push('/notes/' + id + '?edit=1');
       else load();
@@ -121,6 +118,17 @@ export function NotesScreen({ t, mode }) {
       load();
     } catch (err) {
       setLoadError(err.message || t.nLoadError);
+    }
+  };
+
+  const toggleFavorite = async (n) => {
+    const wasFavorite = !!n.favorite;
+    setItems((xs) => xs.map((x) => (x.id === n.id ? { ...x, favorite: !wasFavorite } : x)));
+    try {
+      await notesApi.toggleFavorite(n.id);
+    } catch (err) {
+      setItems((xs) => xs.map((x) => (x.id === n.id ? { ...x, favorite: wasFavorite } : x)));
+      setLoadError(err.message || t.nFavoriteError);
     }
   };
 
@@ -146,11 +154,13 @@ export function NotesScreen({ t, mode }) {
         ? 'radial-gradient(1000px 600px at 90% 0%, rgba(25,118,210,.10), transparent 60%)'
         : 'radial-gradient(1000px 600px at 90% 0%, rgba(144,202,249,.18), transparent 60%)',
     }}>
+      <NextSeo title={t.nSeoTitle} noindex nofollow />
       <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 5 } }}>
         <Stack spacing={3}>
           <NotesToolbar t={t}
             query={query} onQuery={setQuery}
             status={status} onStatus={setStatus}
+            favoriteOnly={favoriteOnly} onFavoriteOnly={setFavoriteOnly}
             categoryId={categoryFilter} onCategoryId={setCategoryFilter} categories={categories}
             tag={tag} onTag={setTag} allTags={allTags}
             sort={sort} onSort={setSort}
@@ -173,7 +183,7 @@ export function NotesScreen({ t, mode }) {
                 <Grid item xs={12} sm={6} md={4} key={n.id}>
                   <NoteCard t={t} note={n} view="grid"
                     categoryName={categoryById[n.category_id]?.name} tags={NoteTags.get(n.id)}
-                    onOpen={open} onEdit={edit} onDuplicate={duplicate} onDelete={askDelete} />
+                    onOpen={open} onEdit={edit} onDuplicate={duplicate} onDelete={askDelete} onToggleFavorite={toggleFavorite} />
                 </Grid>
               ))}
             </Grid>
@@ -182,7 +192,7 @@ export function NotesScreen({ t, mode }) {
               {filtered.map((n) => (
                 <NoteCard key={n.id} t={t} note={n} view="list"
                   categoryName={categoryById[n.category_id]?.name} tags={NoteTags.get(n.id)}
-                  onOpen={open} onEdit={edit} onDuplicate={duplicate} onDelete={askDelete} />
+                  onOpen={open} onEdit={edit} onDuplicate={duplicate} onDelete={askDelete} onToggleFavorite={toggleFavorite} />
               ))}
             </Stack>
           )}
@@ -193,22 +203,6 @@ export function NotesScreen({ t, mode }) {
           )}
         </Stack>
       </Container>
-
-      <Dialog open={newDialog} onClose={() => setNewDialog(false)} PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
-        <DialogTitle sx={{ fontWeight: 700 }}>{t.nNewDialogT}</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ mb: 2 }}>{t.nNewDialogB}</DialogContentText>
-          <TextField select fullWidth size="small" label={t.nCategory}
-            value={newCategoryId} onChange={(e) => setNewCategoryId(e.target.value)}>
-            <MenuItem value="">{t.nCategoryNone}</MenuItem>
-            {categories.map((c) => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
-          </TextField>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setNewDialog(false)} sx={{ textTransform: 'none' }}>{t.nCancel}</Button>
-          <Button onClick={createNote} variant="contained" disableElevation sx={{ textTransform: 'none', borderRadius: 2 }}>{t.nCreate}</Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog open={!!confirm} onClose={() => setConfirm(null)} PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
         <DialogTitle sx={{ fontWeight: 700 }}>{t.nDeleteConfirmT}</DialogTitle>

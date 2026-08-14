@@ -1,0 +1,43 @@
+import { ENDPOINTS } from '../../config';
+import { apiRequest } from '../apiClient';
+
+export function listNotes({ page, perPage, favorite }) {
+  return apiRequest({
+    ...ENDPOINTS.notesList,
+    query: { page, per_page: perPage, favorite: favorite ? 'true' : undefined },
+  });
+}
+
+export function searchNotes(q) {
+  return apiRequest({
+    ...ENDPOINTS.notesSearch,
+    query: { q },
+  });
+}
+
+export function getNote(id) {
+  return apiRequest({ ...ENDPOINTS.noteGet, pathParams: { id } });
+}
+
+export function createNote({ title, note, categoryId, status }) {
+  return apiRequest({
+    ...ENDPOINTS.notesCreate,
+    form: { title, note, category_id: categoryId, status },
+  });
+}
+
+export function updateNote(id, { title, note, categoryId, status }) {
+  return apiRequest({
+    ...ENDPOINTS.noteUpdate,
+    pathParams: { id },
+    form: { title, note, category_id: categoryId, status },
+  });
+}
+
+export function deleteNote(id) {
+  return apiRequest({ ...ENDPOINTS.noteDelete, pathParams: { id } });
+}
+
+export function toggleFavorite(id) {
+  return apiRequest({ ...ENDPOINTS.noteFavorite, pathParams: { id } });
+}

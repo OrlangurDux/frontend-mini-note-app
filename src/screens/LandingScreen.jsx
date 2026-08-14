@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Head from 'next/head';
+import { NextSeo } from 'next-seo';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
@@ -8,6 +10,7 @@ import Chip from '@mui/material/Chip';
 import { Icon } from '../components/Icon';
 import { NoteMockup } from '../components/landing/NoteMockup';
 import { FeaturesSection, WorkflowSection, StatsQuoteSection, CtaBand } from '../components/landing/LandingSections';
+import { softwareAppJsonLd } from '../lib/seo';
 
 function HeroSection({ mode, t }) {
   return (
@@ -62,8 +65,19 @@ function HeroSection({ mode, t }) {
 }
 
 export function LandingScreen({ t, mode }) {
+  const title = t.brand + ' — ' + t.lHeroTitle;
   return (
     <Box>
+      {/* No titleTemplate here (unlike the app screens) — this is already
+          the fully-branded homepage title, appending " - MiniNote" would
+          double up the brand name. Tracks the language toggle live; the
+          SSR-rendered default (DefaultSeo, English) is what crawlers see. */}
+      <NextSeo title={title} titleTemplate="%s" description={t.lHeroSub}
+        openGraph={{ title, description: t.lHeroSub }} />
+      <Head>
+        {/* eslint-disable-next-line react/no-danger */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd()) }} />
+      </Head>
       <HeroSection mode={mode} t={t} />
       <FeaturesSection mode={mode} t={t} />
       <WorkflowSection mode={mode} t={t} />
