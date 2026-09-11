@@ -51,3 +51,20 @@ export function changePassword(password) {
     form: { password },
   });
 }
+
+export function setTfa(status) {
+  return apiRequest({
+    ...ENDPOINTS.setTfa,
+    form: { status },
+  });
+}
+
+// `token` is the short-lived mfa access_token from /users/login, not a
+// bearer session token — no Authorization header goes out with this call.
+export function verifyOtp(token, code) {
+  return apiRequest({
+    ...ENDPOINTS.verifyOtp,
+    form: { token, code },
+    auth: false,
+  });
+}

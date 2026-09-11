@@ -42,8 +42,9 @@ export function AuthProvider({ children }) {
     profileApi.getProfile().then((res) => setUser(res?.data || null)).catch(() => {});
   }, [isAuthenticated]);
 
-  const login = useCallback(async (email, password) => {
-    const res = await authApi.login(email, password);
+  // Shared by both the direct-login and post-2FA paths: only a real Bearer
+  // response should ever be persisted as the session token.
+  const completeLogin = useCallback((res) => {
     AuthStorage.set(res.access_token, res.expires_in);
     setIsAuthenticated(true);
     // Push anything that piled up offline under a previous (possibly
@@ -53,12 +54,29 @@ export function AuthProvider({ children }) {
     return res;
   }, []);
 
+  // When the account has 2FA enabled, /users/login responds with
+  // token_type "mfa" and a short-lived (~60s) token instead of a session —
+  // that token is NOT a bearer credential, it's only good for one call to
+  // /users/otp alongside the current TOTP code. Never store it as the auth
+  // token: the caller (LoginScreen) checks `token_type` on the result and
+  // routes to the code-entry step instead of treating this as signed in.
+  const login = useCallback(async (email, password) => {
+    const res = await authApi.login(email, password);
+    if (res.token_type === 'mfa') return res;
+    return completeLogin(res);
+  }, [completeLogin]);
+
+  const verifyOtp = useCallback(async (mfaToken, code) => {
+    const res = await authApi.verifyOtp(mfaToken, code);
+    return completeLogin(res);
+  }, [completeLogin]);
+
   const register = useCallback(async (email, password) => {
     return authApi.register(email, password);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, ready, login, register, logout, setUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, ready, login, verifyOtp, register, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -32,6 +32,36 @@ const STR = {
     footer: '© 2026 MiniNote Labs · All systems nominal',
     errGeneric: 'Something went wrong. Please try again.',
 
+    // 2FA — login step
+    mfaTitle: 'Two-factor authentication',
+    mfaSubtitle: 'Enter the 6-digit code from your authenticator app.',
+    mfaCode: 'Authentication code',
+    mfaSubmit: 'Verify',
+    mfaSubmitting: 'Verifying…',
+    mfaBack: 'Back to sign in',
+    mfaRequiredCode: 'Enter the 6-digit code.',
+    mfaExpiredHint: 'The code request expired — sign in again to get a new one.',
+
+    // 2FA — profile settings
+    pTfaTitle: 'Two-factor authentication',
+    pTfaSub: 'Require a code from an authenticator app when signing in.',
+    pTfaEnabled: 'Enabled',
+    pTfaDisabled: 'Disabled',
+    pTfaEnableAction: 'Enable',
+    pTfaDisableAction: 'Disable',
+    pTfaEnableConfirmT: 'Enable two-factor authentication?',
+    pTfaEnableConfirmB: 'You’ll need a code from your authenticator app every time you sign in from now on.',
+    pTfaDisableConfirmT: 'Disable two-factor authentication?',
+    pTfaDisableConfirmB: 'Signing in will only require your password again.',
+    pTfaScanTitle: 'Scan this QR code',
+    pTfaScanBody: 'Scan with your authenticator app (Google Authenticator, 1Password, Authy…), or enter the details manually.',
+    pTfaManualEntry: 'Can’t scan? Enter manually',
+    pTfaAccount: 'Account',
+    pTfaSecretKey: 'Key',
+    pTfaDone: 'Done, I’ve added it',
+    pTfaEnabledToast: 'Two-factor authentication enabled.',
+    pTfaDisabledToast: 'Two-factor authentication disabled.',
+
     // Offline mode
     offlineBadge: 'Offline',
     syncingBadge: 'Syncing…',
@@ -290,6 +320,36 @@ const STR = {
     signOut: 'Выйти',
     footer: '© 2026 MiniNote Labs · Все системы в норме',
     errGeneric: 'Что-то пошло не так. Попробуйте ещё раз.',
+
+    // 2FA — шаг входа
+    mfaTitle: 'Двухфакторная аутентификация',
+    mfaSubtitle: 'Введите 6-значный код из приложения-аутентификатора.',
+    mfaCode: 'Код аутентификации',
+    mfaSubmit: 'Подтвердить',
+    mfaSubmitting: 'Проверяем…',
+    mfaBack: 'Назад ко входу',
+    mfaRequiredCode: 'Введите 6-значный код.',
+    mfaExpiredHint: 'Время запроса кода истекло — войдите заново, чтобы получить новый.',
+
+    // 2FA — настройки профиля
+    pTfaTitle: 'Двухфакторная аутентификация',
+    pTfaSub: 'Требовать код из приложения-аутентификатора при входе.',
+    pTfaEnabled: 'Включена',
+    pTfaDisabled: 'Отключена',
+    pTfaEnableAction: 'Включить',
+    pTfaDisableAction: 'Отключить',
+    pTfaEnableConfirmT: 'Включить двухфакторную аутентификацию?',
+    pTfaEnableConfirmB: 'При каждом входе будет нужен код из приложения-аутентификатора.',
+    pTfaDisableConfirmT: 'Отключить двухфакторную аутентификацию?',
+    pTfaDisableConfirmB: 'Для входа снова будет достаточно пароля.',
+    pTfaScanTitle: 'Отсканируйте QR-код',
+    pTfaScanBody: 'Отсканируйте код приложением-аутентификатором (Google Authenticator, 1Password, Authy…) или введите данные вручную.',
+    pTfaManualEntry: 'Не получается отсканировать? Ввести вручную',
+    pTfaAccount: 'Аккаунт',
+    pTfaSecretKey: 'Ключ',
+    pTfaDone: 'Готово, я добавил(а)',
+    pTfaEnabledToast: 'Двухфакторная аутентификация включена.',
+    pTfaDisabledToast: 'Двухфакторная аутентификация отключена.',
 
     // Офлайн-режим
     offlineBadge: 'Офлайн',

@@ -44,6 +44,13 @@ export const ENDPOINTS = {
   profile: { method: 'GET', path: '/users/profile' },
   updateProfile: { method: 'PUT', path: '/users/profile' },
   deleteProfile: { method: 'DELETE', path: '/users/profile' },
+  // Enable/disable TOTP 2FA. Enabling takes effect immediately (no separate
+  // confirm step) and returns an otpauth:// URL to render as a QR code.
+  setTfa: { method: 'PUT', path: '/users/tfa' },
+  // Step 2 of login when /users/login comes back with token_type "mfa":
+  // exchange that short-lived token + the current TOTP code for a real
+  // Bearer JWT. `auth: false` — there's no bearer token yet at this point.
+  verifyOtp: { method: 'POST', path: '/users/otp' },
 
   notesList: { method: 'GET', path: '/notes' },
   notesCreate: { method: 'POST', path: '/notes' },

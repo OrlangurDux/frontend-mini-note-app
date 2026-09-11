@@ -16,10 +16,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Tooltip from '@mui/material/Tooltip';
+import Switch from '@mui/material/Switch';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import { QRCodeSVG } from 'qrcode.react';
 import { Avatar } from '../components/profile/Avatar';
+import { Icon } from '../components/Icon';
 import { useAuth } from '../contexts/AuthContext';
 import { useNetwork } from '../contexts/NetworkContext';
 import { resolveAssetUrl } from '../lib/domains';
+import { parseOtpAuthUrl, formatSecret } from '../lib/otpauth';
 import * as profileApi from '../lib/api/profile';
 import * as authApi from '../lib/api/auth';
 
@@ -53,6 +59,14 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
+
+  // Two-factor authentication. `tfaConfirmTarget` (true/false) is set while
+  // the enable/disable confirm dialog is open; `tfaSetup` holds the parsed
+  // otpauth:// details once enabling succeeds, driving the QR dialog.
+  const [tfaConfirmTarget, setTfaConfirmTarget] = useState(null);
+  const [tfaBusy, setTfaBusy] = useState(false);
+  const [tfaSetup, setTfaSetup] = useState(null);
+  const [tfaManualOpen, setTfaManualOpen] = useState(false);
 
   useEffect(() => { setName(user?.name || ''); }, [user]);
 
@@ -106,6 +120,33 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
     }
   };
 
+  const confirmTfa = async () => {
+    const target = tfaConfirmTarget;
+    setTfaBusy(true);
+    setError('');
+    try {
+      const res = await authApi.setTfa(target);
+      const fresh = await profileApi.getProfile();
+      setUser(fresh?.data || null);
+      if (target) {
+        setTfaManualOpen(false);
+        setTfaSetup({ url: res?.data?.url || '', ...parseOtpAuthUrl(res?.data?.url || '') });
+      } else {
+        setToast(t.pTfaDisabledToast);
+      }
+    } catch (err) {
+      setError(err.message || t.errGeneric);
+    } finally {
+      setTfaBusy(false);
+      setTfaConfirmTarget(null);
+    }
+  };
+
+  const closeTfaSetup = () => {
+    setTfaSetup(null);
+    setToast(t.pTfaEnabledToast);
+  };
+
   return (
     <Box sx={{
       flex: 1, position: 'relative', bgcolor: 'background.default',
@@ -156,6 +197,20 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
             </Box>
           </Card>
 
+          <Card title={t.pTfaTitle} subtitle={t.pTfaSub}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Typography sx={{ fontSize: 14.5, fontWeight: 500 }}>
+                {user?.is_2fa ? t.pTfaEnabled : t.pTfaDisabled}
+              </Typography>
+              <Tooltip title={isOnline ? '' : t.offlineDisabledHint}>
+                <span>
+                  <Switch checked={!!user?.is_2fa} disabled={!isOnline || tfaBusy}
+                    onChange={(e) => setTfaConfirmTarget(e.target.checked)} />
+                </span>
+              </Tooltip>
+            </Stack>
+          </Card>
+
           <Card title={t.pSecPrefs} subtitle={t.pSecPrefsSub}>
             <Stack spacing={2}>
               <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -197,6 +252,56 @@ export function ProfileScreen({ t, mode, lang, onToggleMode, onToggleLang }) {
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setConfirmDelete(false)} sx={{ textTransform: 'none' }}>{t.pCancel}</Button>
           <Button onClick={deleteAccount} variant="contained" color="error" disableElevation sx={{ textTransform: 'none', borderRadius: 2 }}>{t.pDelete}</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={tfaConfirmTarget !== null} onClose={() => (tfaBusy ? null : setTfaConfirmTarget(null))} PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
+        <DialogTitle sx={{ fontWeight: 700 }}>{tfaConfirmTarget ? t.pTfaEnableConfirmT : t.pTfaDisableConfirmT}</DialogTitle>
+        <DialogContent><DialogContentText>{tfaConfirmTarget ? t.pTfaEnableConfirmB : t.pTfaDisableConfirmB}</DialogContentText></DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setTfaConfirmTarget(null)} disabled={tfaBusy} sx={{ textTransform: 'none' }}>{t.pCancel}</Button>
+          <Button onClick={confirmTfa} disabled={tfaBusy} variant="contained" disableElevation
+                  color={tfaConfirmTarget ? 'primary' : 'error'} sx={{ textTransform: 'none', borderRadius: 2 }}>
+            {tfaConfirmTarget ? t.pTfaEnableAction : t.pTfaDisableAction}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={!!tfaSetup} onClose={closeTfaSetup} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: 3, p: 1 } }}>
+        <DialogTitle sx={{ fontWeight: 700 }}>{t.pTfaScanTitle}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} alignItems="center">
+            <DialogContentText sx={{ textAlign: 'center' }}>{t.pTfaScanBody}</DialogContentText>
+            {tfaSetup?.url && (
+              <Box sx={{ bgcolor: '#fff', p: 2, borderRadius: 2, lineHeight: 0 }}>
+                <QRCodeSVG value={tfaSetup.url} size={200} bgColor="#ffffff" fgColor="#000000" level="M" />
+              </Box>
+            )}
+            <Button onClick={() => setTfaManualOpen((v) => !v)} variant="text" size="small"
+                    sx={{ textTransform: 'none' }}>{t.pTfaManualEntry}</Button>
+            <Collapse in={tfaManualOpen} sx={{ width: '100%' }}>
+              <Stack spacing={1.25} sx={{ width: '100%', p: 1.5, borderRadius: 2, bgcolor: 'action.hover' }}>
+                <Stack spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">{t.pTfaAccount}</Typography>
+                  <Typography sx={{ fontSize: 13.5, wordBreak: 'break-all' }}>{tfaSetup?.issuer ? tfaSetup.issuer + ': ' : ''}{tfaSetup?.account}</Typography>
+                </Stack>
+                <Stack spacing={0.25}>
+                  <Typography variant="caption" color="text.secondary">{t.pTfaSecretKey}</Typography>
+                  <Stack direction="row" alignItems="center" spacing={0.5}>
+                    <Typography sx={{ fontSize: 14, fontFamily: 'JetBrains Mono, monospace', wordBreak: 'break-all', flex: 1 }}>
+                      {formatSecret(tfaSetup?.secret)}
+                    </Typography>
+                    <IconButton size="small" onClick={() => navigator.clipboard?.writeText(tfaSetup?.secret || '')}>
+                      <Icon d="M9 9h10v10H9zM5 15V5h10" size={16} sw={1.8} />
+                    </IconButton>
+                  </Stack>
+                </Stack>
+              </Stack>
+            </Collapse>
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={closeTfaSetup} variant="contained" disableElevation fullWidth sx={{ textTransform: 'none', borderRadius: 2 }}>{t.pTfaDone}</Button>
         </DialogActions>
       </Dialog>
 
