@@ -29,8 +29,22 @@ const STR = {
     successBody: 'Redirecting you to your workspace…',
     continueLabel: 'Continue to workspace',
     signOut: 'Sign out',
-    footer: '© 2026 MiniNote Labs · All systems nominal',
+    footer: '© 2026 MiniNote · Open source · All systems nominal',
     errGeneric: 'Something went wrong. Please try again.',
+
+    // Legal — footer links, shared document chrome
+    legalUpdated: 'Last updated',
+    footerCookies: 'Cookies',
+    footerPrivacy: 'Privacy Policy',
+    footerPersonalData: 'Data Processing Policy',
+    footerCookieSettings: 'Cookie settings',
+
+    // Cookie consent banner
+    cookieBannerTitle: 'We keep this simple',
+    cookieBannerBody: 'MiniNote doesn’t use tracking, advertising, or analytics cookies. We store a few things locally in your browser to keep you signed in and, if you allow it, to remember your language and theme. See our Cookie Policy for the full detail.',
+    cookieBannerAcceptAll: 'Accept all',
+    cookieBannerNecessaryOnly: 'Necessary only',
+    cookieBannerLearnMore: 'Cookie Policy',
 
     // 2FA — login step
     mfaTitle: 'Two-factor authentication',
@@ -318,8 +332,22 @@ const STR = {
     successBody: 'Перенаправляем в рабочее пространство…',
     continueLabel: 'Перейти в рабочее пространство',
     signOut: 'Выйти',
-    footer: '© 2026 MiniNote Labs · Все системы в норме',
+    footer: '© 2026 MiniNote · Открытый исходный код · Все системы в норме',
     errGeneric: 'Что-то пошло не так. Попробуйте ещё раз.',
+
+    // Юридические страницы — ссылки в подвале, общее оформление документа
+    legalUpdated: 'Обновлено',
+    footerCookies: 'Cookie',
+    footerPrivacy: 'Конфиденциальность',
+    footerPersonalData: 'Обработка персональных данных',
+    footerCookieSettings: 'Настройки cookie',
+
+    // Баннер согласия на cookie
+    cookieBannerTitle: 'Мы не усложняем',
+    cookieBannerBody: 'MiniNote не использует рекламные и аналитические cookie для слежения. Мы храним локально в вашем браузере только то, что нужно для входа в аккаунт, а с вашего разрешения — ещё язык и тему интерфейса. Подробности — в Политике использования cookie.',
+    cookieBannerAcceptAll: 'Принять все',
+    cookieBannerNecessaryOnly: 'Только необходимые',
+    cookieBannerLearnMore: 'Политика cookie',
 
     // 2FA — шаг входа
     mfaTitle: 'Двухфакторная аутентификация',

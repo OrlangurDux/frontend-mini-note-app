@@ -30,6 +30,7 @@ export const STORAGE_KEYS = {
   activeDomainId: 'mininote:domains:active',
   noteTags: 'mininote:noteTags', // local-only mock, not synced to backend
   pref: (key) => 'mininote:pref:' + key,
+  cookieConsent: 'mininote:cookieConsent',
 };
 
 // Swagger: Mini Note RESTful API v0.1.2, basePath /api/v1
