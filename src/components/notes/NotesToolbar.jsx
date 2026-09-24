@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Icon } from '../Icon';
+import { TAGS_ENABLED } from '../../config';
 
 const STAR_D = 'M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2Z';
 
@@ -39,7 +40,7 @@ export function NotesToolbar({
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems={{ sm: 'center' }}>
         <TextField value={query} onChange={(e) => onQuery(e.target.value)} placeholder={t.nSearch}
-          fullWidth size="medium"
+          fullWidth size="small"
           InputProps={{
             sx: { borderRadius: 2, bgcolor: 'background.paper' },
             startAdornment: (
@@ -57,23 +58,45 @@ export function NotesToolbar({
           }}
         />
         <Stack direction="row" spacing={1} alignItems="center">
-          <TextField select size="small" value={categoryId} onChange={(e) => onCategoryId(e.target.value)}
-            sx={{ minWidth: 160, bgcolor: 'background.paper', '& .MuiOutlinedInput-root': { borderRadius: 2 } }}>
-            <MenuItem value="">{t.nCategoryNone}</MenuItem>
+          {/* `displayEmpty` is required for a Select to show anything at all
+              when its value is '' — MUI only renders a value when the field
+              is "filled" (non-empty) or this flag is set, so without it the
+              "All categories" option renders as a blank box. It only takes
+              effect via `SelectProps` — TextField doesn't forward a bare
+              `displayEmpty` prop down to the underlying Select at all, so it
+              silently does nothing there (verified against MUI's own
+              TextField source: unrecognized props like that land on the
+              outer root, not the inner Select). `bgcolor` has to live on the
+              same nested selector as `borderRadius` (not the outer TextField
+              root) or the square-cornered outer box shows through behind
+              the rounded input — most visible in light mode, where that box
+              is white against the barely-different page background. */}
+          <TextField select size="small" SelectProps={{ displayEmpty: true }} value={categoryId} onChange={(e) => onCategoryId(e.target.value)}
+            sx={{ minWidth: 160, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}>
+            <MenuItem value="">{t.nCategoryAll}</MenuItem>
             {categories.map((c) => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
           </TextField>
-          <TextField select size="small" value={sort} onChange={(e) => onSort(e.target.value)} sx={{ minWidth: 180, bgcolor: 'background.paper', '& .MuiOutlinedInput-root': { borderRadius: 2 } }}>
+          <TextField select size="small" value={sort} onChange={(e) => onSort(e.target.value)} sx={{ minWidth: 180, '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: 'background.paper' } }}>
             <MenuItem value="updated">{t.nSortUpdated}</MenuItem>
             <MenuItem value="newest">{t.nSortNewest}</MenuItem>
             <MenuItem value="oldest">{t.nSortOldest}</MenuItem>
             <MenuItem value="az">{t.nSortAZ}</MenuItem>
           </TextField>
-          <ToggleButtonGroup value={view} exclusive size="small"
-            onChange={(_, v) => v && onView(v)} sx={{ bgcolor: 'background.paper', borderRadius: 2, '& .MuiToggleButton-root': { border: 1, borderColor: 'divider' } }}>
-            <ToggleButton value="grid" sx={{ borderRadius: '8px 0 0 8px !important', textTransform: 'none', px: 1.25 }}>
+          {/* ToggleButton has no size that lines up with TextField's 40px
+              "small" — pin height explicitly instead of guessing via size.
+              Corner radius matches the 20px (borderRadius: 2) used by the
+              search field and selects above, so the end buttons read as
+              proper pill caps instead of the near-square corners a plain
+              8px radius gives at this height. */}
+          <ToggleButtonGroup value={view} exclusive
+            onChange={(_, v) => v && onView(v)} sx={{
+              bgcolor: 'background.paper', borderRadius: 2,
+              '& .MuiToggleButton-root': { minHeight: 40, px: 1.5 },
+            }}>
+            <ToggleButton value="grid" sx={{ borderRadius: '20px 0 0 20px !important', textTransform: 'none' }}>
               <Icon d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" size={16} sw={1.8} />
             </ToggleButton>
-            <ToggleButton value="list" sx={{ borderRadius: '0 8px 8px 0 !important', textTransform: 'none', px: 1.25 }}>
+            <ToggleButton value="list" sx={{ borderRadius: '0 20px 20px 0 !important', textTransform: 'none' }}>
               <Icon d="M4 6h16M4 12h16M4 18h16" size={16} sw={1.8} />
             </ToggleButton>
           </ToggleButtonGroup>
@@ -88,16 +111,20 @@ export function NotesToolbar({
         <Chip icon={<Icon d={STAR_D} size={14} fill={favoriteOnly ? 'currentColor' : 'none'} />}
               label={t.nFavoritesOnly} variant={favoriteOnly ? 'filled' : 'outlined'} color={favoriteOnly ? 'primary' : 'default'}
               onClick={() => onFavoriteOnly(!favoriteOnly)} />
-        <Box sx={{ width: 1, height: 24, bgcolor: 'divider', mx: 0.5, alignSelf: 'center' }} />
-        {allTags.map((tg) => (
-          <Chip key={tg} label={'#' + tg} size="small"
-                variant={tag === tg ? 'filled' : 'outlined'}
-                color={tag === tg ? 'primary' : 'default'}
-                onClick={() => onTag(tag === tg ? '' : tg)}
-                sx={{ fontFamily: 'JetBrains Mono, monospace' }} />
-        ))}
+        {TAGS_ENABLED && (
+          <>
+            <Box sx={{ width: 1, height: 24, bgcolor: 'divider', mx: 0.5, alignSelf: 'center' }} />
+            {allTags.map((tg) => (
+              <Chip key={tg} label={'#' + tg} size="small"
+                    variant={tag === tg ? 'filled' : 'outlined'}
+                    color={tag === tg ? 'primary' : 'default'}
+                    onClick={() => onTag(tag === tg ? '' : tg)}
+                    sx={{ fontFamily: 'JetBrains Mono, monospace' }} />
+            ))}
+          </>
+        )}
       </Stack>
-      <Typography variant="caption" color="text.secondary">{t.nTagsHint}</Typography>
+      {TAGS_ENABLED && <Typography variant="caption" color="text.secondary">{t.nTagsHint}</Typography>}
     </Stack>
   );
 }

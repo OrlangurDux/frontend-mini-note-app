@@ -41,7 +41,7 @@ const STR = {
 
     // Cookie consent banner
     cookieBannerTitle: 'We keep this simple',
-    cookieBannerBody: 'MiniNote doesn’t use tracking, advertising, or analytics cookies. We store a few things locally in your browser to keep you signed in and, if you allow it, to remember your language and theme. See our Cookie Policy for the full detail.',
+    cookieBannerBody: 'MiniNote doesn’t use tracking, advertising, or analytics cookies. We store a few things locally in your browser to keep you signed in and, if you allow it, to remember your language, theme, and notes view (grid or list). See our Cookie Policy for the full detail.',
     cookieBannerAcceptAll: 'Accept all',
     cookieBannerNecessaryOnly: 'Necessary only',
     cookieBannerLearnMore: 'Cookie Policy',
@@ -190,6 +190,10 @@ const STR = {
     nLink: 'Copy link',
     nCategory: 'Category',
     nCategoryNone: 'No category',
+    // Toolbar filter's empty option — distinct from nCategoryNone (which
+    // means "this note has no category" when editing one note's category).
+    // Here empty means "don't filter by category", i.e. show all.
+    nCategoryAll: 'All',
     nStatus: 'Status',
     nTagsHint: 'Tags are stored locally for now (not yet synced with the server).',
     nLoadError: 'Could not load notes from this server.',
@@ -344,7 +348,7 @@ const STR = {
 
     // Баннер согласия на cookie
     cookieBannerTitle: 'Мы не усложняем',
-    cookieBannerBody: 'MiniNote не использует рекламные и аналитические cookie для слежения. Мы храним локально в вашем браузере только то, что нужно для входа в аккаунт, а с вашего разрешения — ещё язык и тему интерфейса. Подробности — в Политике использования cookie.',
+    cookieBannerBody: 'MiniNote не использует рекламные и аналитические cookie для слежения. Мы храним локально в вашем браузере только то, что нужно для входа в аккаунт, а с вашего разрешения — ещё язык, тему интерфейса и вид списка заметок (плитка или список). Подробности — в Политике использования cookie.',
     cookieBannerAcceptAll: 'Принять все',
     cookieBannerNecessaryOnly: 'Только необходимые',
     cookieBannerLearnMore: 'Политика cookie',
@@ -488,6 +492,7 @@ const STR = {
     nLink: 'Скопировать ссылку',
     nCategory: 'Категория',
     nCategoryNone: 'Без категории',
+    nCategoryAll: 'Все',
     nStatus: 'Статус',
     nTagsHint: 'Теги пока хранятся локально (не синхронизируются с сервером).',
     nLoadError: 'Не удалось загрузить заметки с этого сервера.',

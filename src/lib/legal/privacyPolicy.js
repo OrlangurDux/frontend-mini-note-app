@@ -10,7 +10,7 @@
 export const privacyPolicy = {
   en: {
     title: 'Privacy Policy',
-    updated: '2026-09-18',
+    updated: '2026-09-24',
     intro: 'This Privacy Policy explains how MiniNote ("we", "us", "our") collects, uses, and protects personal data when you use mini-note.app (the "Service"). It is written to meet the disclosure requirements of the EU/UK General Data Protection Regulation ("GDPR") and the California Consumer Privacy Act as amended by the California Privacy Rights Act ("CCPA/CPRA"). MiniNote is open-source software: this policy covers only the reference deployment at mini-note.app. If you run your own copy of this software (self-hosted or forked), you — not the MiniNote project — are the controller for your own deployment, and you should publish your own policy.',
     sections: [
       {
@@ -27,7 +27,7 @@ export const privacyPolicy = {
           'Account data: the email address and (optional) display name and avatar you provide when you register or edit your profile.',
           'Your content: note titles, note bodies, and category names you create. You control this content, and it may contain personal data about you or third parties that you choose to include.',
           'Technical data: IP address, browser/device type, and timestamps, generated automatically by standard web-server request logs.',
-          'Local preferences: your chosen theme and language, stored only in your browser and only with your consent (see our Cookie Policy).',
+          'Local preferences: your chosen theme, language, and notes view, stored only in your browser and only with your consent (see our Cookie Policy).',
         ],
       },
       {
@@ -118,7 +118,7 @@ export const privacyPolicy = {
 
   ru: {
     title: 'Политика конфиденциальности',
-    updated: '18.09.2026',
+    updated: '24.09.2026',
     intro: 'Настоящая Политика конфиденциальности описывает, как MiniNote («мы») собирает, использует и защищает данные пользователей сайта mini-note.app («Сервис»). Подробный порядок обработки персональных данных, права субъекта и правовые основания раскрыты в отдельной Политике обработки персональных данных, которая является неотъемлемой частью настоящего документа. MiniNote — программное обеспечение с открытым исходным кодом; настоящая Политика описывает только эталонный (референсный) инстанс на mini-note.app. Если вы самостоятельно разворачиваете собственную копию этого ПО (self-hosted или форк), оператором персональных данных вашего инстанса являетесь вы, а не проект MiniNote, и вам следует опубликовать собственную политику.',
     sections: [
       {
@@ -135,7 +135,7 @@ export const privacyPolicy = {
           'Данные аккаунта: адрес электронной почты и (по желанию) отображаемое имя и аватар, указанные при регистрации или в профиле.',
           'Ваш контент: заголовки и тексты заметок, названия категорий. Этот контент создаёте вы сами и он может содержать персональные данные о вас или третьих лицах, если вы решите их туда включить.',
           'Технические данные: IP-адрес, тип браузера/устройства и отметки времени — формируются автоматически стандартными журналами веб-сервера.',
-          'Локальные настройки: выбранная тема и язык интерфейса — хранятся только в вашем браузере и только с вашего согласия (см. Политику использования cookie).',
+          'Локальные настройки: выбранная тема, язык и вид списка заметок — хранятся только в вашем браузере и только с вашего согласия (см. Политику использования cookie).',
         ],
       },
       {

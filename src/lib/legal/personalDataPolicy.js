@@ -22,7 +22,7 @@
 export const personalDataPolicy = {
   en: {
     title: 'Data Processing Policy',
-    updated: '2026-09-18',
+    updated: '2026-09-24',
     intro: 'This Data Processing Policy is a technical companion to our Privacy Policy. It sets out, in more detail, what personal data MiniNote processes, on what legal basis, through which operations, and how to exercise your rights under the GDPR/UK GDPR and the CCPA/CPRA. In case of any conflict, the Privacy Policy’s plain-language summary and this page should be read together, not as alternatives. This policy applies to the reference deployment at mini-note.app; a self-hosted or forked instance has its own operator.',
     sections: [
       {
@@ -44,7 +44,7 @@ export const personalDataPolicy = {
           'Identification data (email, display name, avatar) — collection, storage, use for authentication, update, deletion.',
           'User content (notes, categories) — storage, retrieval, update, deletion, at your direction.',
           'Technical/log data (IP address, user agent, timestamps) — collection via standard server logs, use for security and abuse prevention, automatic rotation/deletion.',
-          'Local preference data (theme, language) — storage in your browser only, with your consent, never transmitted to our servers.',
+          'Local preference data (theme, language, notes view) — storage in your browser only, with your consent, never transmitted to our servers.',
         ],
       },
       {
@@ -94,7 +94,7 @@ export const personalDataPolicy = {
 
   ru: {
     title: 'Политика обработки персональных данных',
-    updated: '18.09.2026',
+    updated: '24.09.2026',
     intro: 'Настоящая Политика обработки персональных данных разработана в соответствии с пунктом 2 части 1 статьи 18.1 Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» и определяет политику MiniNote (далее — «Оператор») в отношении обработки персональных данных. MiniNote — программное обеспечение с открытым исходным кодом; настоящая Политика применяется к эталонному инстансу на mini-note.app. У самостоятельно развёрнутого (self-hosted) или форкнутого инстанса — свой оператор.',
     sections: [
       {
@@ -134,7 +134,7 @@ export const personalDataPolicy = {
           'регистрация и идентификация Пользователя, предоставление доступа к функциям Сервиса;',
           'исполнение обязательств по пользовательскому соглашению;',
           'обеспечение информационной безопасности и предотвращение злоупотреблений;',
-          'сохранение пользовательских настроек интерфейса (язык, тема) — только с согласия Пользователя;',
+          'сохранение пользовательских настроек интерфейса (язык, тема, вид списка заметок) — только с согласия Пользователя;',
           'ответы на обращения Пользователя.',
         ],
       },

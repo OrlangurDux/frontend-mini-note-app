@@ -8,6 +8,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Icon } from '../Icon';
 import { stripMarkdown } from '../../lib/markdown';
+import { TAGS_ENABLED } from '../../config';
 
 const STATUS_COLOR = { draft: 'default', public: 'success', archive: 'warning' };
 const STAR_D = 'M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2Z';
@@ -64,11 +65,13 @@ export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, on
             {stripMarkdown(note.note).slice(0, 140)}
           </Typography>
         </Stack>
-        <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
-          {(tags || []).slice(0, 2).map((tg) => (
-            <Chip key={tg} label={'#' + tg} size="small" variant="outlined" sx={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, height: 22 }} />
-          ))}
-        </Stack>
+        {TAGS_ENABLED && (
+          <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
+            {(tags || []).slice(0, 2).map((tg) => (
+              <Chip key={tg} label={'#' + tg} size="small" variant="outlined" sx={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, height: 22 }} />
+            ))}
+          </Stack>
+        )}
         <Typography variant="caption" color="text.secondary" sx={{ minWidth: 140, textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}>
           {updated}
         </Typography>
@@ -98,11 +101,13 @@ export function NoteCard({ t, note, view, categoryName, tags, onOpen, onEdit, on
       <Typography variant="body2" color="text.secondary" sx={{ flex: 1, display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
         {stripMarkdown(note.note)}
       </Typography>
-      <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', rowGap: 0.5 }}>
-        {(tags || []).map((tg) => (
-          <Chip key={tg} label={'#' + tg} size="small" variant="outlined" sx={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, height: 22 }} />
-        ))}
-      </Stack>
+      {TAGS_ENABLED && (
+        <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', rowGap: 0.5 }}>
+          {(tags || []).map((tg) => (
+            <Chip key={tg} label={'#' + tg} size="small" variant="outlined" sx={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, height: 22 }} />
+          ))}
+        </Stack>
+      )}
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 0.5, pt: 1, borderTop: 1, borderColor: 'divider' }}>
         <Typography variant="caption" sx={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'text.secondary' }}>{updated}</Typography>
         {More}

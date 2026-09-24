@@ -23,6 +23,7 @@ import { Icon } from '../components/Icon';
 import { MarkdownEditor } from '../components/notes/MarkdownEditor';
 import { useCategories } from '../contexts/CategoriesContext';
 import { NoteTags } from '../lib/notesTags';
+import { TAGS_ENABLED } from '../config';
 import * as notesApi from '../lib/api/notes';
 
 const STAR_D = 'M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2Z';
@@ -170,19 +171,21 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
                     {categories.map((c) => <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>)}
                   </TextField>
                 </Stack>
-                <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', rowGap: 0.75 }}>
-                  {tags.map((tg) => (
-                    <Chip key={tg} label={'#' + tg} size="small" onDelete={() => setTags(tags.filter((x) => x !== tg))}
-                          sx={{ fontFamily: 'JetBrains Mono, monospace' }} />
-                  ))}
-                  <TextField placeholder="+ tag" variant="standard" size="small"
-                    onKeyDown={(e) => { if (e.key === 'Enter' && e.target.value.trim()) {
-                      const v = e.target.value.trim().replace(/^#/, '');
-                      if (!tags.includes(v)) setTags([...tags, v]);
-                      e.target.value = '';
-                    } }}
-                    InputProps={{ disableUnderline: true, sx: { fontFamily: 'JetBrains Mono, monospace', fontSize: 13, ml: 0.5 } }} />
-                </Stack>
+                {TAGS_ENABLED && (
+                  <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', rowGap: 0.75 }}>
+                    {tags.map((tg) => (
+                      <Chip key={tg} label={'#' + tg} size="small" onDelete={() => setTags(tags.filter((x) => x !== tg))}
+                            sx={{ fontFamily: 'JetBrains Mono, monospace' }} />
+                    ))}
+                    <TextField placeholder="+ tag" variant="standard" size="small"
+                      onKeyDown={(e) => { if (e.key === 'Enter' && e.target.value.trim()) {
+                        const v = e.target.value.trim().replace(/^#/, '');
+                        if (!tags.includes(v)) setTags([...tags, v]);
+                        e.target.value = '';
+                      } }}
+                      InputProps={{ disableUnderline: true, sx: { fontFamily: 'JetBrains Mono, monospace', fontSize: 13, ml: 0.5 } }} />
+                  </Stack>
+                )}
                 <MarkdownEditor mode={mode} value={draft.note}
                   onChange={(v) => setDraft({ ...draft, note: v })}
                   placeholder="Write in markdown…" />
@@ -195,7 +198,7 @@ export function NoteDetailScreen({ t, mode, id, startEditing }) {
                 <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap', rowGap: 0.75 }}>
                   <Chip size="small" label={{ draft: t.nStatusDraft, public: t.nStatusPublic, archive: t.nStatusArchive }[note.status] || note.status} variant="outlined" />
                   {categoryName && <Chip size="small" label={categoryName} variant="outlined" />}
-                  {tags.map((tg) => <Chip key={tg} label={'#' + tg} size="small" sx={{ fontFamily: 'JetBrains Mono, monospace' }} />)}
+                  {TAGS_ENABLED && tags.map((tg) => <Chip key={tg} label={'#' + tg} size="small" sx={{ fontFamily: 'JetBrains Mono, monospace' }} />)}
                 </Stack>
                 <Divider />
                 <MarkdownEditor value={note.note} editable={false} />

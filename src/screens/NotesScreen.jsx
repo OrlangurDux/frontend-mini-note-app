@@ -20,6 +20,7 @@ import { NoteCard } from '../components/notes/NoteCard';
 import { NotesPagination } from '../components/notes/NotesPagination';
 import { useCategories } from '../contexts/CategoriesContext';
 import { NoteTags, SUGGESTED_TAGS } from '../lib/notesTags';
+import { Prefs } from '../lib/prefs';
 import { PAGINATION_DEFAULTS } from '../config';
 import * as notesApi from '../lib/api/notes';
 
@@ -37,7 +38,13 @@ export function NotesScreen({ t, mode }) {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [tag, setTag] = useState('');
   const [sort, setSort] = useState('updated');
-  const [view, setView] = useState('grid');
+  // Grid/list is a local-only preference for now (see Prefs — same
+  // localStorage mechanism as theme/language, gated on cookie consent).
+  // Start from the SSR default ('grid') and only switch to the stored
+  // choice after mount, so server and first client render stay in sync.
+  const [view, setViewState] = useState('grid');
+  useEffect(() => { setViewState(Prefs.get('view', 'grid')); }, []);
+  const setView = (v) => { setViewState(v); Prefs.set('view', v); };
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
   const [confirm, setConfirm] = useState(null);

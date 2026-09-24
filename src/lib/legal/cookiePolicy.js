@@ -8,7 +8,7 @@
 export const cookiePolicy = {
   en: {
     title: 'Cookie Policy',
-    updated: '2026-09-18',
+    updated: '2026-09-24',
     intro: 'This Cookie Policy explains what cookies and similar technologies MiniNote ("we", "us") uses on mini-note.app (the "Service"), why, and how you can control them. It should be read together with our Privacy Policy.',
     sections: [
       {
@@ -41,6 +41,7 @@ export const cookiePolicy = {
         list: [
           'Your chosen interface language (English / Russian).',
           'Your chosen color theme (light / dark).',
+          'Your chosen notes view (grid / list).',
         ],
       },
       {
@@ -79,7 +80,7 @@ export const cookiePolicy = {
 
   ru: {
     title: 'Политика использования файлов cookie',
-    updated: '18.09.2026',
+    updated: '24.09.2026',
     intro: 'Настоящая Политика объясняет, какие файлы cookie и аналогичные технологии использует MiniNote («мы») на сайте mini-note.app («Сервис»), для чего и как вы можете ими управлять. Её следует читать вместе с Политикой конфиденциальности и Политикой обработки персональных данных.',
     sections: [
       {
@@ -112,6 +113,7 @@ export const cookiePolicy = {
         list: [
           'Выбранный язык интерфейса (русский / английский).',
           'Выбранная цветовая тема (светлая / тёмная).',
+          'Выбранный вид списка заметок (плитка / список).',
         ],
       },
       {

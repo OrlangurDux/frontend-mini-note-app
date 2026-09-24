@@ -23,6 +23,14 @@ export const PAGINATION_DEFAULTS = {
 
 export const NOTE_STATUSES = ['draft', 'public', 'archive'];
 
+// Tags are currently a local-only mock (see lib/notesTags.js) — the
+// backend has no endpoint for them yet, so every "tag" only exists in
+// this browser and never syncs. Hiding the UI (toolbar filter row, note
+// cards, note editor) until there's real backend support; the data layer
+// and wiring are left in place so flipping this back to true is the only
+// step needed once that support lands.
+export const TAGS_ENABLED = false;
+
 export const STORAGE_KEYS = {
   authToken: 'mininote:auth:token',
   authExpiresAt: 'mininote:auth:expiresAt',

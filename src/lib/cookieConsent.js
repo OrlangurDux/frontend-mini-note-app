@@ -1,7 +1,7 @@
 // Tracks the visitor's cookie/local-storage consent choice. MiniNote sets
 // no tracking, analytics, or advertising cookies — the only thing gated
-// behind consent is the "preferences" bucket (remembering theme/language
-// across visits, see lib/prefs.js). Everything else the app stores
+// behind consent is the "preferences" bucket (remembering theme/language/
+// view across visits, see lib/prefs.js). Everything else the app stores
 // locally (auth session, selected server, offline note cache) is strictly
 // necessary for the app to function and isn't gated.
 //
@@ -14,7 +14,9 @@ import { getJSON, setJSON } from './safeStorage';
 
 // Bump this if the cookie/privacy policy text changes in a way that
 // should re-prompt users who already made a choice under the old text.
-export const CONSENT_VERSION = 1;
+// v2 (2026-09-24): notes view (grid/list) joined theme/language as a
+// third item stored under the "preferences" consent category.
+export const CONSENT_VERSION = 2;
 
 export function getConsent() {
   const record = getJSON(STORAGE_KEYS.cookieConsent, null);
